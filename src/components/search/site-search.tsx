@@ -3,16 +3,14 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
-import useSWR from "swr"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
-
-const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 export function SiteSearch({ className }: { className?: string }) {
   const [query, setQuery] = useState("")
   const [debounced, setDebounced] = useState("")
   const [open, setOpen] = useState(false)
+  const [suggestions, setSuggestions] = useState<any[]>([])
   const containerRef = useRef<HTMLDivElement | null>(null)
   const router = useRouter()
 
@@ -21,10 +19,23 @@ export function SiteSearch({ className }: { className?: string }) {
     return () => clearTimeout(t)
   }, [query])
 
-  const { data } = useSWR(
-    debounced.length > 1 ? `/api/search/suggest?q=${encodeURIComponent(debounced)}` : null,
-    fetcher,
-  )
+  useEffect(() => {
+    async function fetchSuggestions() {
+      if (debounced.length > 1) {
+        try {
+          const res = await fetch(`/api/search/suggest?q=${encodeURIComponent(debounced)}`)
+          const data = await res.json()
+          setSuggestions(data.suggestions || [])
+        } catch (error) {
+          console.error('Failed to fetch suggestions:', error)
+          setSuggestions([])
+        }
+      } else {
+        setSuggestions([])
+      }
+    }
+    fetchSuggestions()
+  }, [debounced])
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -62,14 +73,14 @@ export function SiteSearch({ className }: { className?: string }) {
         </button>
       </form>
 
-      {open && data?.suggestions?.length > 0 && (
+      {open && suggestions.length > 0 && (
         <div
           role="listbox"
           aria-label="Search suggestions"
           className="absolute z-50 mt-2 w-full overflow-hidden rounded-md border border-border bg-background shadow"
         >
           <ul className="max-h-80 overflow-auto">
-            {data.suggestions.map((s: any) => (
+            {suggestions.map((s: any) => (
               <li
                 key={s.id}
                 className="flex cursor-pointer items-center gap-3 p-3 hover:bg-muted"
