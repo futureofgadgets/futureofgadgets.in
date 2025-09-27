@@ -69,8 +69,8 @@ const itemSchema = z.object({
   description: z.string().min(1, "Description is required"),
   coverImage: z.string().url("Must be a valid URL"),
   images: z.string().min(1, "At least one image is required"),
-  price: z.coerce.number().min(0, "Price is required"),
-  quantity: z.coerce.number().min(0, "Quantity is required"),
+  price: z.number().min(0, "Price is required"),
+  quantity: z.number().min(0, "Quantity is required"),
 });
 
 type ItemFormValues = z.infer<typeof itemSchema>;
@@ -89,14 +89,12 @@ export default function ProductTable() {
   const [addingNewType, setAddingNewType] = useState(false);
   const [newType, setNewType] = useState("");
 
-  const defaultValues: ItemFormValues = {
+  const defaultValues: Partial<ItemFormValues> = {
     name: "",
     type: "",
     description: "",
     coverImage: "",
     images: "",
-    price: 0,
-    quantity: 0,
   };
 
   const form = useForm<ItemFormValues>({
@@ -401,7 +399,12 @@ export default function ProductTable() {
                       <FormItem>
                         <FormLabel>Price (INR)</FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="e.g. 1299" {...field} />
+                          <Input 
+                            type="number" 
+                            placeholder="e.g. 1299" 
+                            value={field.value || ''}
+                            onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -414,7 +417,12 @@ export default function ProductTable() {
                       <FormItem>
                         <FormLabel>Quantity</FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="e.g. 10" {...field} />
+                          <Input 
+                            type="number" 
+                            placeholder="e.g. 10" 
+                            value={field.value || ''}
+                            onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
