@@ -86,8 +86,26 @@ export default function ProductTable() {
 
   // Product type dropdown state
   const [productTypes, setProductTypes] = useState<string[]>([
-    "Electronic",
-    "Product",
+    "Laptops",
+    "Desktops", 
+    "Monitors",
+    "Keyboards",
+    "Mouse",
+    "Headphones",
+    "Speakers",
+    "Webcams",
+    "Storage",
+    "RAM",
+    "Graphics Cards",
+    "Processors",
+    "Motherboards",
+    "Power Supply",
+    "Cooling",
+    "Cases",
+    "Cables",
+    "Printers",
+    "Tablets",
+    "Smartphones"
   ]);
   const [addingNewType, setAddingNewType] = useState(false);
   const [newType, setNewType] = useState("");
@@ -467,7 +485,7 @@ export default function ProductTable() {
                         Additional Images (comma separated URLs)
                       </FormLabel>
                       <FormControl>
-                        <Textarea
+                        <Input
                           placeholder="https://img1.jpg, https://img2.jpg"
                           {...field}
                         />

@@ -193,35 +193,69 @@ export default function ProductTable() {
     setNewType("");
   };
 
-  const onSubmit = (values: ItemFormValues) => {
+  const onSubmit = async (values: ItemFormValues) => {
     const imagesArr = values.images
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean);
 
-    if (editId) {
-      setData((prev) =>
-        prev.map((it) =>
-          it.id === editId
-            ? { ...it, ...values, images: imagesArr, updatedAt: new Date().toISOString() }
-            : it
-        )
-      );
-      toast.success("Item updated successfully!");
-    } else {
-      const newItem: Item = {
-        id: Date.now().toString(), // new items can generate id here
-        ...values,
-        images: imagesArr,
-        updatedAt: new Date().toISOString(),
-      };
-      setData((prev) => [newItem, ...prev]);
-      toast.success("Item added successfully!");
-    }
+    try {
+      if (editId) {
+        const res = await fetch(`/api/products/${editId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...values,
+            images: imagesArr,
+            category: values.type,
+            image: values.coverImage,
+            stock: values.quantity
+          })
+        });
+        if (!res.ok) throw new Error("Failed to update");
+        
+        setData((prev) =>
+          prev.map((it) =>
+            it.id === editId
+              ? { ...it, ...values, images: imagesArr, updatedAt: new Date().toISOString() }
+              : it
+          )
+        );
+        toast.success("Item updated successfully!");
+      } else {
+        const res = await fetch("/api/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...values,
+            images: imagesArr,
+            category: values.type,
+            image: values.coverImage,
+            stock: values.quantity,
+            slug: values.name.toLowerCase().replace(/\s+/g, "-"),
+            title: values.name,
+            status: "active"
+          })
+        });
+        if (!res.ok) throw new Error("Failed to add");
+        
+        const newProduct = await res.json();
+        const newItem: Item = {
+          id: newProduct.id,
+          ...values,
+          images: imagesArr,
+          updatedAt: new Date().toISOString(),
+        };
+        setData((prev) => [newItem, ...prev]);
+        toast.success("Item added successfully!");
+      }
 
-    form.reset(defaultValues);
-    setOpen(false);
-    setEditId(null);
+      form.reset(defaultValues);
+      setOpen(false);
+      setEditId(null);
+    } catch (err: any) {
+      toast.error(`Failed: ${err.message}`);
+    }
   };
 
   return (
