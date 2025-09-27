@@ -74,7 +74,7 @@ export default function SearchPage() {
       {query && !loading && (
         <div className="mb-4">
           <p className="text-muted-foreground">
-            {results.length} results for "{query}"
+            {results.length} results for &quot;{query}&quot;
           </p>
         </div>
       )}
@@ -116,7 +116,7 @@ export default function SearchPage() {
       {query && !loading && results.length === 0 && (
         <div className="text-center py-12">
           <p className="text-lg text-muted-foreground mb-4">
-            No products found for "{query}"
+            No products found for &quot;{query}&quot;
           </p>
           <p className="text-sm text-muted-foreground">
             Try searching for different keywords or browse our categories
