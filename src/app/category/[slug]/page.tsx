@@ -5,25 +5,27 @@ import { notFound } from "next/navigation"
 
 type Params = { slug: string }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const exists = products.some((p) => p.category.toLowerCase() === params.slug.toLowerCase())
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+  const { slug } = await params
+  const exists = products.some((p) => p.category.toLowerCase() === slug.toLowerCase())
   if (!exists) return { title: "Category Not Found" }
-  const title = `${params.slug} • Category`
+  const title = `${slug} • Category`
   return {
     title,
-    description: `Browse products in ${params.slug}`,
-    alternates: { canonical: `/category/${params.slug}` },
+    description: `Browse products in ${slug}`,
+    alternates: { canonical: `/category/${slug}` },
   }
 }
 
-export default function CategoryPage({ params }: { params: Params }) {
-  const list = products.filter((p) => p.category.toLowerCase() === params.slug.toLowerCase() && p.status === "active")
+export default async function CategoryPage({ params }: { params: Promise<Params> }) {
+  const { slug } = await params
+  const list = products.filter((p) => p.category.toLowerCase() === slug.toLowerCase() && p.status === "active")
   if (list.length === 0) notFound()
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold text-foreground text-balance">{params.slug}</h1>
+        <h1 className="text-2xl font-semibold text-foreground text-balance">{slug}</h1>
       </header>
       <ProductGrid items={list} />
     </main>

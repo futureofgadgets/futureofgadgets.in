@@ -209,7 +209,7 @@ export default function CheckoutPage() {
             </button>
           </form>
 
-          <aside className="rounded-md border border-border p-4">
+          <aside className="rounded-md border border-border p-4 h-fit">
             <h2 className="mb-4 text-lg font-medium text-foreground">Order Summary</h2>
             <ul className="space-y-3">
               {items.map((it) => (
