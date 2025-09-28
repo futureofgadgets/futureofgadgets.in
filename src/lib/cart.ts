@@ -1,5 +1,7 @@
 "use client"
 
+import { toast } from 'sonner'
+
 type CartItem = {
   id: string
   slug: string
@@ -40,8 +42,10 @@ export function addToCart(item: CartItem) {
   const idx = items.findIndex((i) => i.id === item.id)
   if (idx >= 0) {
     items[idx].qty = (items[idx].qty || 1) + 1
+    toast.success(`${item.name} quantity updated in cart`)
   } else {
     items.push({ ...item, qty: 1 })
+    toast.success(`${item.name} added to cart`)
   }
   write(items)
 }
