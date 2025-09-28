@@ -108,7 +108,7 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
           <p className="text-gray-600">No products are currently available in this category.</p>
         </div>
       ) : (
-        <ProductGrid items={products.map(p => ({ ...p, image: p.frontImage }))} />
+        <ProductGrid items={products.map((p: any) => ({ ...p, image: p.frontImage }))} />
       )}
     </main>
   )
