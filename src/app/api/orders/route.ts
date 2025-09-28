@@ -1,60 +1,61 @@
 import { NextResponse } from "next/server"
-import { addOrder, getOrders, findProductById } from "@/lib/mock-db"
-import type { Address, Order, OrderItem, PaymentMethod } from "@/lib/types"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
+import { prisma } from "@/lib/prisma"
 
 export async function GET() {
-  return NextResponse.json({ orders: getOrders() })
+  const session = await getServerSession(authOptions)
+  
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+  
+  const orders = await prisma.order.findMany({ where: { userId: session.user.id } })
+  return NextResponse.json({ orders })
 }
 
 export async function POST(request: Request) {
+  const session = await getServerSession(authOptions)
+  
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+  
   const body = await request.json()
-  const {
-    items,
-    address,
-    paymentMethod,
-    deliveryDate,
-    userEmail,
-  }: {
-    items: { productId: string; qty: number }[]
-    address: Address
-    paymentMethod: PaymentMethod
-    deliveryDate: string
-    userEmail?: string
-  } = body
+  const { items, address, paymentMethod, deliveryDate } = body
 
   if (!Array.isArray(items) || items.length === 0) {
     return NextResponse.json({ error: "No items provided" }, { status: 400 })
   }
 
-  const orderItems: OrderItem[] = []
+  const orderItems = []
   let total = 0
 
   for (const it of items) {
-    const prod = findProductById(it.productId)
-    if (!prod) return NextResponse.json({ error: `Invalid product ${it.productId}` }, { status: 400 })
-    const line: OrderItem = {
-      productId: prod.id,
-      title: prod.name,
-      price: prod.price,
-      qty: Math.max(1, Math.floor(it.qty || 1)),
-      image: prod.image,
+    const product = await prisma.product.findUnique({ where: { id: it.productId } })
+    if (!product) return NextResponse.json({ error: `Invalid product ${it.productId}` }, { status: 400 })
+    
+    const orderItem = {
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      qty: Math.max(1, Math.floor(it.qty || 1))
     }
-    orderItems.push(line)
-    total += line.price * line.qty
+    orderItems.push(orderItem)
+    total += orderItem.price * orderItem.qty
   }
 
-  const newOrder: Order = {
-    id: `o_${Date.now()}`,
-    createdAt: new Date().toISOString(),
-    items: orderItems,
-    total,
-    status: paymentMethod === "cod" ? "pending" : "paid",
-    address,
-    paymentMethod,
-    deliveryDate,
-    userEmail,
-  }
+  const order = await prisma.order.create({
+    data: {
+      userId: session.user.id,
+      items: orderItems,
+      total,
+      status: paymentMethod === "cod" ? "pending" : "paid",
+      address,
+      paymentMethod,
+      deliveryDate: new Date(deliveryDate)
+    }
+  })
 
-  addOrder(newOrder)
-  return NextResponse.json({ order: newOrder }, { status: 201 })
+  return NextResponse.json({ order }, { status: 201 })
 }
