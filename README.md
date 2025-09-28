@@ -1,37 +1,142 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Electronic Web - E-commerce Platform
 
-## Getting Started
+A modern e-commerce platform built with Next.js 14, featuring a clean Flipkart-inspired design for electronics and tech products.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### 🛍️ E-commerce Core
+- **Product Catalog**: Browse electronics with categories (Laptops, Desktops, Monitors, Keyboards, Headphones)
+- **Shopping Cart**: Add/remove items with quantity management and toast notifications
+- **Search**: Real-time product search with keyboard navigation and suggestions
+- **Categories**: Hover-triggered dropdown navigation with icons and descriptions
+
+### 👤 User Management
+- **Authentication**: Sign in/up with NextAuth.js (Credentials + Google OAuth)
+- **User Profile**: Editable profile with phone/address fields and order history
+- **Protected Routes**: Secure access to profile, orders, and admin areas
+- **Session Management**: Persistent login with loading states
+
+### 📱 Modern UI/UX
+- **Flipkart-Style Design**: Clean white sections with gray separators
+- **Responsive Layout**: Mobile-first design with Tailwind CSS
+- **Interactive Elements**: Hover effects, smooth transitions, and loading states
+- **Toast Notifications**: User feedback for all actions (Sonner)
+- **Icons**: Lucide React icons throughout the interface
+
+### 🛒 Shopping Experience
+- **Product Grid**: Responsive product display with images and pricing
+- **Cart Management**: Persistent cart with localStorage sync
+- **Empty States**: Friendly messages for empty cart/categories
+- **Order Tracking**: Order history with status indicators
+
+### 🔧 Admin Features
+- **Admin Panel**: Product management for admin users
+- **Role-based Access**: Admin-only routes and features
+- **Product CRUD**: Add, edit, and manage product inventory
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS + shadcn/ui components
+- **Authentication**: NextAuth.js
+- **State Management**: React hooks + localStorage
+- **Icons**: Lucide React
+- **Notifications**: Sonner
+- **TypeScript**: Full type safety
+- **Image Optimization**: Next.js Image component
+
+## 📁 Project Structure
+
+```
+src/
+├── app/                    # App Router pages
+│   ├── about/             # About page
+│   ├── admin/             # Admin panel
+│   ├── auth/              # Authentication pages
+│   ├── cart/              # Shopping cart
+│   ├── category/          # Category pages
+│   ├── contact/           # Contact page
+│   ├── orders/            # Order management
+│   └── profile/           # User profile
+├── components/            # Reusable components
+│   ├── admin/             # Admin components
+│   ├── auth/              # Auth components
+│   ├── cart/              # Cart components
+│   └── ui/                # UI components
+└── lib/                   # Utilities and data
+    ├── auth.ts            # Auth configuration
+    ├── cart.ts            # Cart management
+    └── data/              # Mock data
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd Electronic_Web
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-## Learn More
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   # Add your environment variables
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🔐 Admin Access
 
-## Deploy on Vercel
+- **Email**: admin@electronic.com
+- **Password**: admin123
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📱 Key Pages
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# Electronic_Web
+- **Homepage** (`/`): Featured products and categories
+- **Categories** (`/category/[slug]`): Product listings by category
+- **Cart** (`/cart`): Shopping cart management
+- **Profile** (`/profile`): User profile and order history
+- **Orders** (`/orders`): Detailed order tracking
+- **About** (`/about`): Company information
+- **Contact** (`/contact`): Contact form and information
+- **Admin** (`/admin`): Product management (admin only)
+
+## 🎨 Design Features
+
+- **Flipkart-inspired UI**: Clean, professional e-commerce design
+- **Responsive Design**: Works on all device sizes
+- **Interactive Navigation**: Hover dropdowns and smooth transitions
+- **Loading States**: Skeleton screens and spinners
+- **Toast Notifications**: Real-time user feedback
+- **Form Validation**: Client-side validation with error handling
+
+## 🔧 Development
+
+```bash
+# Development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+
+# Lint code
+npm run lint
+```
+
+## 📄 License
+
+This project is licensed under the MIT License.
