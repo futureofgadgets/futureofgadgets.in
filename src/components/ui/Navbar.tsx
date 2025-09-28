@@ -115,11 +115,11 @@ export function Navbar() {
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2" aria-label="Go to homepage">
             <img
-              src="/store-logo.jpg?height=28&width=28&query=store-logo"
+              src="/next.svg"
               alt="Store logo"
-              className="h-7 w-7 rounded"
+              className="h-10 w-full rounded bg-transparent"
             />
-            <span className="font-semibold text-foreground">Electronic</span>
+            {/* <span className="font-semibold text-foreground">Electronic</span> */}
           </Link>
           <div className="hidden md:flex items-center gap-1">
             <div 
@@ -296,7 +296,7 @@ export function Navbar() {
                       }`}
                     >
                       <img 
-                        src={product.image} 
+                        src={product.frontImage || product.image || '/placeholder.svg'} 
                         alt={product.name}
                         className="w-10 h-10 object-cover rounded"
                       />
@@ -347,7 +347,9 @@ export function Navbar() {
                   />
                 ) : (
                   <div className="h-9 w-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                    <User className="h-4 w-4 text-white" />
+                    <span className="text-sm font-semibold text-white">
+                      {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
+                    </span>
                   </div>
                 )}
                 {session && (
@@ -378,7 +380,9 @@ export function Navbar() {
                           />
                         ) : (
                           <div className="h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center ring-3 ring-white dark:ring-gray-800 shadow-lg">
-                            <User className="h-6 w-6 text-white" />
+                            <span className="text-lg font-semibold text-white">
+                              {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
+                            </span>
                           </div>
                         )}
                         <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-green-500 border-2 border-white dark:border-gray-800"></div>
