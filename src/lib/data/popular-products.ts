@@ -3,9 +3,9 @@ import type { Product } from "@/lib/types"
 export const popularProducts: Product[] = [
   {
     id: "pop_001",
-    slug: "gaming-laptop-rtx4070",
-    name: "Gaming Laptop RTX 4070",
-    title: "Gaming Laptop RTX 4070",
+    slug: "gaming-laptop-rtx4060",
+    name: "Gaming Laptop RTX 4060",
+    title: "Gaming Laptop RTX 4060",
     sku: "GL-4070",
     description: "Ultimate gaming laptop with RTX 4070, 32GB RAM, 1TB SSD, and 165Hz display.",
     price: 129999,
@@ -16,8 +16,8 @@ export const popularProducts: Product[] = [
     category: "Laptops",
     brand: "MSI",
     rating: 4.8,
-    image: "/placeholder.svg",
-    images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
+    image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&h=300&fit=crop",
+    images: ["https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=300&fit=crop"],
     updatedAt: new Date().toISOString(),
   },
   {
@@ -35,8 +35,8 @@ export const popularProducts: Product[] = [
     category: "Headphones",
     brand: "Sony",
     rating: 4.7,
-    image: "/placeholder.svg",
-    images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
+    images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&h=300&fit=crop"],
     updatedAt: new Date().toISOString(),
   },
   {
@@ -54,8 +54,8 @@ export const popularProducts: Product[] = [
     category: "Monitors",
     brand: "LG",
     rating: 4.6,
-    image: "/placeholder.svg",
-    images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
+    image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop",
+    images: ["https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1551739440-5dd934d3a94a?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=300&fit=crop"],
     updatedAt: new Date().toISOString(),
   },
   {
@@ -73,8 +73,8 @@ export const popularProducts: Product[] = [
     category: "Graphics Cards",
     brand: "NVIDIA",
     rating: 4.9,
-    image: "/placeholder.svg",
-    images: ["/placeholder.svg", "/placeholder.svg"],
+    image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400&h=300&fit=crop",
+    images: ["https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400&h=300&fit=crop", "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=400&h=300&fit=crop"],
     updatedAt: new Date().toISOString(),
   }
 ]
