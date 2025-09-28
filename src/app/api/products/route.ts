@@ -6,35 +6,53 @@ export async function GET() {
     const products = await prisma.product.findMany({
       orderBy: { createdAt: 'desc' }
     });
-    return NextResponse.json(products);
+    return NextResponse.json(products, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+      }
+    });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
+    console.error('Products fetch error:', error);
+    return NextResponse.json({ 
+      error: 'Failed to fetch products',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
 
 export async function POST(req: Request) {
   try {
     const data = await req.json();
+    
+    // Validate required fields
+    if (!data.name || !data.category || !data.price) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+    
     const product = await prisma.product.create({
       data: {
         name: data.name,
         slug: data.slug,
         category: data.category,
-        description: data.description,
-        frontImage: data.frontImage,
-        images: data.images || [],
-        price: data.price,
-        stock: data.quantity || data.stock || 0,
-        quantity: data.quantity || data.stock || 0,
-        brand: data.brand,
+        description: data.description || '',
+        frontImage: data.frontImage || '',
+        images: Array.isArray(data.images) ? data.images : [],
+        price: Number(data.price),
+        stock: Number(data.quantity) || 0,
+        quantity: Number(data.quantity) || 0,
+        brand: data.brand || '',
         status: data.status || 'active',
-        sku: data.sku
+        sku: data.sku || `SKU-${Date.now()}`
       }
     });
-    return NextResponse.json(product);
+    
+    return NextResponse.json(product, { status: 201 });
   } catch (error) {
     console.error('Product creation error:', error);
-    return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Failed to create product',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
 

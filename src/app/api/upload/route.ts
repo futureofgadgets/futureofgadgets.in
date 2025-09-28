@@ -50,6 +50,10 @@ export async function POST(request: NextRequest) {
       files: uploadedFiles 
     })
   } catch (error) {
-    return NextResponse.json({ error: 'Upload failed' }, { status: 500 })
+    console.error('Upload error:', error)
+    return NextResponse.json({ 
+      error: 'Upload failed',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
   }
 }
