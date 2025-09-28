@@ -84,7 +84,7 @@ export function AuthDialog({ open, onOpenChange, mode }: AuthDialogProps) {
                 required
               />
             </div>
-            <Button type="submit" className="w-full h-11 font-medium cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white" disabled={isLoading}>
+            <button type="submit" className="w-full h-11 font-medium text-sm rounded-md cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -96,7 +96,7 @@ export function AuthDialog({ open, onOpenChange, mode }: AuthDialogProps) {
               ) : (
                 isSignUp ? 'Create Account' : 'Sign In'
               )}
-            </Button>
+            </button>
           </form>
           
           <div className="relative">
