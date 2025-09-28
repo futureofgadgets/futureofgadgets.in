@@ -35,19 +35,16 @@ interface Item {
   name: string;
   type: string;
   description: string;
-  coverImage: string;
+  frontImage: string;
   images: string[];
-  price: string; // <-- add this line
+  price: string;
   brand?: string;
 }
 
-// Zod schema for validation
 const itemSchema = z.object({
   name: z.string().min(1, "Name is required"),
   type: z.string().min(1, "Type is required"),
   description: z.string().min(1, "Description is required"),
-  coverImage: z.string().url("Must be a valid URL"),
-  images: z.string().min(1, "At least one image is required"),
   price: z.string().min(1, "Price is required"),
 });
 
@@ -56,6 +53,9 @@ type ItemFormValues = z.infer<typeof itemSchema>;
 export default function ItemFormWithList() {
   const [items, setItems] = useState<Item[]>([]);
   const [editId, setEditId] = useState<string | null>(null);
+  const [frontImage, setFrontImage] = useState<File | null>(null);
+  const [additionalImages, setAdditionalImages] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
 
   const form = useForm<ItemFormValues>({
     resolver: zodResolver(itemSchema),
@@ -63,8 +63,6 @@ export default function ItemFormWithList() {
       name: "",
       type: "",
       description: "",
-      coverImage: "",
-      images: "",
       price: "",
     },
   });
@@ -80,39 +78,55 @@ export default function ItemFormWithList() {
     localStorage.setItem("items", JSON.stringify(items));
   }, [items]);
 
-  // Submit handler
-  const onSubmit = (data: ItemFormValues) => {
-    const item: Item = {
-      id: editId || Date.now().toString(),
-      name: data.name,
-      type: data.type,
-      description: data.description,
-      coverImage: data.coverImage,
-      images: data.images.split(",").map((img) => img.trim()),
-      price: data.price, // <-- FIXED
-    };
-
-    if (editId) {
-      setItems(items.map((it) => (it.id === editId ? item : it)));
-      toast.success("Item updated successfully!", {
-        style: { background: "#fff", color: "#22c55e" },
-      });
-    } else {
-      setItems([...items, item]);
-      toast.success("Item added successfully!", {
-        style: { background: "#fff", color: "#22c55e" }, // Tailwind green-500
-      });
+  const onSubmit = async (data: ItemFormValues) => {
+    if (!frontImage) {
+      toast.error("Front image is required");
+      return;
     }
 
-    setEditId(null);
-    form.reset({
-      name: "",
-      type: "",
-      description: "",
-      coverImage: "",
-      images: "",
-      price: "",
-    });
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('frontImage', frontImage);
+      additionalImages.forEach((img, index) => {
+        formData.append(`image${index}`, img);
+      });
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (!result.success) throw new Error(result.error);
+
+      const item: Item = {
+        id: editId || Date.now().toString(),
+        name: data.name,
+        type: data.type,
+        description: data.description,
+        frontImage: result.files[0],
+        images: result.files.slice(1),
+        price: data.price,
+      };
+
+      if (editId) {
+        setItems(items.map((it) => (it.id === editId ? item : it)));
+        toast.success("Item updated successfully!");
+      } else {
+        setItems([...items, item]);
+        toast.success("Item added successfully!");
+      }
+
+      setEditId(null);
+      setFrontImage(null);
+      setAdditionalImages([]);
+      form.reset();
+    } catch (error) {
+      toast.error("Upload failed");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleEdit = (item: Item) => {
@@ -120,11 +134,11 @@ export default function ItemFormWithList() {
       name: item.name,
       type: item.type,
       description: item.description,
-      coverImage: item.coverImage,
-      images: item.images.join(", "),
       price: item.price,
     });
     setEditId(item.id);
+    setFrontImage(null);
+    setAdditionalImages([]);
   };
 
   const handleDelete = (id: string) => {
@@ -145,7 +159,7 @@ export default function ItemFormWithList() {
               <div className="flex items-center justify-between">
                 <div className="flex gap-4 items-center">
                   <img
-                    src={item.coverImage}
+                    src={item.frontImage}
                     alt={item.name}
                     className="w-20 h-20 object-cover rounded"
                   />
@@ -285,40 +299,49 @@ export default function ItemFormWithList() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="coverImage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Cover Image URL</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="https://example.com/image.jpg"
-                      {...field}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Front Image *</label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setFrontImage(e.target.files?.[0] || null)}
+                  className="cursor-pointer"
+                />
+                {frontImage && (
+                  <div className="mt-2">
+                    <img
+                      src={URL.createObjectURL(frontImage)}
+                      alt="Preview"
+                      className="w-20 h-20 object-cover rounded"
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="images"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Additional Images (comma separated URLs)
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="https://img1.jpg, https://img2.jpg"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  </div>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">Additional Images</label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => setAdditionalImages(Array.from(e.target.files || []))}
+                  className="cursor-pointer"
+                />
+                {additionalImages.length > 0 && (
+                  <div className="mt-2 flex gap-2 flex-wrap">
+                    {additionalImages.map((img, index) => (
+                      <img
+                        key={index}
+                        src={URL.createObjectURL(img)}
+                        alt={`Preview ${index + 1}`}
+                        className="w-16 h-16 object-cover rounded"
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
 
             <FormField
               control={form.control}
@@ -335,8 +358,8 @@ export default function ItemFormWithList() {
             />
 
             <div className="flex gap-2">
-              <Button type="submit" className="cursor-pointer">
-                {editId ? "Update Item" : "Add Item"}
+              <Button type="submit" disabled={uploading} className="cursor-pointer">
+                {uploading ? "Uploading..." : editId ? "Update Item" : "Add Item"}
               </Button>
               {editId && (
                 <Button
@@ -344,6 +367,8 @@ export default function ItemFormWithList() {
                   onClick={() => {
                     form.reset();
                     setEditId(null);
+                    setFrontImage(null);
+                    setAdditionalImages([]);
                   }}
                   className="cursor-pointer"
                 >
