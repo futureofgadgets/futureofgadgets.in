@@ -4,118 +4,162 @@ import { CATEGORIES } from "@/lib/data/products"
 import { popularProducts } from "@/lib/data/popular-products"
 import HeaderSlider from "@/components/home/HomeSlider"
 import ProductCard from "@/components/product-card"
+import { Footer } from "@/components/Footer"
 
 export const metadata: Metadata = {
-  title: "Home",
+  title: "Electronic Store - Best Electronics Online Shopping",
   alternates: { canonical: "/" },
 }
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-slate-800">
-      {/* Hero Section */}
-      <div className="mx-auto max-w-7xl px-4 py-8">
-        <HeaderSlider/>
+    <main className="min-h-screen bg-gray-100 dark:bg-gray-900">
+      {/* Hero Banner */}
+      <div className="bg-white dark:bg-gray-800">
+        <div className="mx-auto max-w-7xl px-4 py-4">
+          <HeaderSlider/>
+        </div>
       </div>
       
-      {/* Categories Section */}
-      <section className="py-16 bg-white dark:bg-gray-900">
+      {/* Top Categories */}
+      <section className="bg-white dark:bg-gray-800 py-6 mt-2">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-              Shop by Category
-            </h2>
-            <p className="text-gray-600 text-lg">Discover our wide range of electronics and computer products</p>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Top Categories</h2>
+            <Link href="/category" className="text-blue-500 hover:text-blue-600 text-sm font-medium">
+              VIEW ALL
+            </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-            {CATEGORIES.slice(0, 12).map((category, index) => (
+          <div className="grid grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-4">
+            {CATEGORIES.slice(0, 10).map((category) => (
               <Link
                 key={category}
                 href={`/category/${category.toLowerCase()}`}
-                className="group relative p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300 text-center overflow-hidden"
+                className="flex flex-col items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative z-10">
-                  <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
-                    {category.charAt(0)}
-                  </div>
-                  <h3 className="font-semibold text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{category}</h3>
+                <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900 rounded-full flex items-center justify-center mb-2">
+                  <span className="text-2xl">
+                    {category === 'Laptops' ? '💻' : 
+                     category === 'Smartphones' ? '📱' : 
+                     category === 'Headphones' ? '🎧' : 
+                     category === 'Monitors' ? '📺' : 
+                     category === 'Keyboards' ? '⌨️' : 
+                     category === 'Mouse' ? '🖱️' : 
+                     category === 'Storage' ? '💾' : '📦'}
+                  </span>
                 </div>
+                <span className="text-xs text-center text-gray-700 dark:text-gray-300 font-medium">{category}</span>
               </Link>
             ))}
-          </div>
-          <div className="text-center mt-8">
-            <Link href="/category" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:shadow-lg transition-all duration-300 hover:scale-105">
-              View All Categories
-              <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
           </div>
         </div>
       </section>
 
-      {/* Popular Products Section */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-slate-700">
+      {/* Deals of the Day */}
+      <section className="bg-white dark:bg-gray-800 py-6 mt-2">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-4">
-              Popular Products
-            </h2>
-            <p className="text-gray-600 text-lg">Best-selling items loved by our customers</p>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Deals of the Day</h2>
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <span>⏰</span>
+                <span>22h 15m Left</span>
+              </div>
+            </div>
+            <Link href="/products" className="text-blue-500 hover:text-blue-600 text-sm font-medium">
+              VIEW ALL
+            </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {popularProducts.map((product) => (
-              <div key={product.id} className="transform hover:scale-105 transition-all duration-300">
+              <div key={product.id} className="transform transition-all duration-300">
                 <ProductCard product={product} />
               </div>
             ))}
           </div>
-          <div className="text-center mt-12">
-            <Link href="/products" className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-full hover:shadow-xl transition-all duration-300 hover:scale-105">
-              Explore All Products
-              <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
+        </div>
+      </section>
+
+      
+
+      {/* Best of Electronics */}
+      <section className="bg-white dark:bg-gray-800 py-6 mt-2">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Best of Electronics</h2>
+            <Link href="/products" className="text-blue-500 hover:text-blue-600 text-sm font-medium">
+              VIEW ALL
             </Link>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {popularProducts.slice(6, 12).map((product) => (
+              <div key={product.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-3 hover:shadow-md transition-shadow bg-white dark:bg-gray-700">
+                <ProductCard product={product} />
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-16 bg-white dark:bg-gray-900">
+      {/* Top Offers */}
+      <section className="bg-white dark:bg-gray-800 py-6 mt-2">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-100 dark:border-green-800">
-              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Top Offers</h2>
+            <Link href="/products" className="text-blue-500 hover:text-blue-600 text-sm font-medium">
+              VIEW ALL
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {popularProducts.map((product) => (
+              <div key={product.id} className="transform transition-all duration-300">
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Services */}
+      <section className="bg-white dark:bg-gray-800 py-8 mt-2">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="text-center">
+              <div className="w-12 h-12 mx-auto mb-2 text-blue-500">
+                <svg fill="currentColor" viewBox="0 0 24 24" className="w-full h-full">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Quality Guaranteed</h3>
-              <p className="text-gray-600 dark:text-gray-400">All products come with manufacturer warranty and quality assurance</p>
+              <h3 className="font-semibold text-gray-900 dark:text-white text-sm">Quality Assured</h3>
             </div>
-            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border border-blue-100 dark:border-blue-800">
-              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div className="text-center">
+              <div className="w-12 h-12 mx-auto mb-2 text-blue-500">
+                <svg fill="currentColor" viewBox="0 0 24 24" className="w-full h-full">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Fast Delivery</h3>
-              <p className="text-gray-600 dark:text-gray-400">Quick and secure delivery to your doorstep within 2-3 business days</p>
+              <h3 className="font-semibold text-gray-900 dark:text-white text-sm">7 Day Return</h3>
             </div>
-            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border border-purple-100 dark:border-purple-800">
-              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5z" />
+            <div className="text-center">
+              <div className="w-12 h-12 mx-auto mb-2 text-blue-500">
+                <svg fill="currentColor" viewBox="0 0 24 24" className="w-full h-full">
+                  <path d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 0 1 4 0v1h-4V6zm6 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v10z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">24/7 Support</h3>
-              <p className="text-gray-600 dark:text-gray-400">Round-the-clock customer support for all your technical needs</p>
+              <h3 className="font-semibold text-gray-900 dark:text-white text-sm">Free Delivery</h3>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 mx-auto mb-2 text-blue-500">
+                <svg fill="currentColor" viewBox="0 0 24 24" className="w-full h-full">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                </svg>
+              </div>
+              <h3 className="font-semibold text-gray-900 dark:text-white text-sm">24x7 Support</h3>
             </div>
           </div>
         </div>
       </section>
+      <Footer/>
     </main>
   )
 }

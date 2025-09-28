@@ -50,28 +50,33 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { Plus } from "lucide-react";
 
 type Item = {
   id: string;
+  slug: string;
   name: string;
-  type: string;
+  title: string;
+  category: string;
   description: string;
-  coverImage: string;
+  image: string;
   images: string[];
   price: number;
   quantity: number;
+  brand?: string;
   updatedAt: string;
 };
 
 // Validation schema
 const itemSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  type: z.string().min(1, "Type is required"),
+  category: z.string().min(1, "Category is required"),
   description: z.string().min(1, "Description is required"),
-  coverImage: z.string().url("Must be a valid URL"),
+  image: z.string().url("Must be a valid URL"),
   images: z.string().min(1, "At least one image is required"),
   price: z.number().min(0, "Price is required"),
   quantity: z.number().min(0, "Quantity is required"),
+  brand: z.string().optional(),
 });
 
 type ItemFormValues = z.infer<typeof itemSchema>;
@@ -112,12 +117,13 @@ export default function ProductTable() {
 
   const defaultValues: ItemFormValues = {
     name: "",
-    type: "",
+    category: "",
     description: "",
-    coverImage: "",
+    image: "",
     images: "",
     price: 0,
     quantity: 0,
+    brand: "",
   };
 
   const form = useForm<ItemFormValues>({
@@ -131,17 +137,16 @@ export default function ProductTable() {
       .then((products) => {
         const items: Item[] = (products || []).map((p: any) => ({
           id: p.id ?? Date.now().toString(),
+          slug: p.slug ?? "",
           name: p.name ?? p.title ?? "Untitled",
-          type: p.type ?? p.category ?? "General",
+          title: p.title ?? p.name ?? "Untitled",
+          category: p.category ?? p.type ?? "General",
           description: p.description ?? "",
-          coverImage: p.coverImage ?? p.image ?? "/placeholder.svg",
-          images:
-            p.images ??
-            (p.image
-              ? [p.image]
-              : p.images?.split?.(",").map((s: string) => s.trim()) ?? []),
+          image: p.image ?? p.coverImage ?? "/placeholder.svg",
+          images: Array.isArray(p.images) ? p.images : (p.images?.split?.(",").map((s: string) => s.trim()) ?? []),
           price: Number(p.price ?? 0),
-          quantity: Number(p.quantity ?? 0),
+          quantity: Number(p.quantity ?? p.stock ?? 0),
+          brand: p.brand ?? "",
           updatedAt: p.updatedAt ?? new Date().toISOString(),
         }));
         setData(items);
@@ -149,7 +154,7 @@ export default function ProductTable() {
 
         // Extract unique product types from data
         const uniqueTypes = [
-          ...new Set(items.map((item) => item.type).filter(Boolean)),
+          ...new Set(items.map((item) => item.category).filter(Boolean)),
         ];
         setProductTypes((prev) => [...new Set([...prev, ...uniqueTypes])]);
       })
@@ -165,8 +170,10 @@ export default function ProductTable() {
     return data.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
-        p.type.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q)
+        p.title.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
+        (p.brand || "").toLowerCase().includes(q)
     );
   }, [data, query]);
 
@@ -185,12 +192,13 @@ export default function ProductTable() {
     setEditId(item.id);
     form.reset({
       name: item.name,
-      type: item.type,
+      category: item.category,
       description: item.description,
-      coverImage: item.coverImage,
+      image: item.image,
       images: (item.images || []).join(", "),
       price: item.price,
       quantity: item.quantity,
+      brand: item.brand || "",
     });
     setOpen(true);
   };
@@ -217,11 +225,18 @@ export default function ProductTable() {
   const handleAddNewType = () => {
     if (newType.trim() && !productTypes.includes(newType.trim())) {
       setProductTypes((prev) => [...prev, newType.trim()]);
-      form.setValue("type", newType.trim());
+      form.setValue("category", newType.trim());
       toast.success(`Added new type: ${newType.trim()}`);
     }
     setAddingNewType(false);
     setNewType("");
+  };
+
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
   };
 
   const onSubmit = async (values: ItemFormValues) => {
@@ -230,13 +245,23 @@ export default function ProductTable() {
       .map((s) => s.trim())
       .filter(Boolean);
 
+    const productData = {
+      ...values,
+      title: values.name,
+      slug: generateSlug(values.name),
+      images: imagesArr,
+      stock: values.quantity,
+      status: "active" as const,
+      sku: `SKU-${Date.now()}`,
+    };
+
     if (editId) {
       // Edit existing item
       try {
         const res = await fetch(`/api/products/${editId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...values, images: imagesArr }),
+          body: JSON.stringify(productData),
         });
 
         if (!res.ok) {
@@ -259,7 +284,7 @@ export default function ProductTable() {
         const res = await fetch("/api/products", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...values, images: imagesArr }),
+          body: JSON.stringify(productData),
         });
 
         if (!res.ok) {
@@ -301,7 +326,7 @@ export default function ProductTable() {
 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>Add Item</Button>
+            <Button className="cursor-pointer">Add Item <Plus/></Button>
           </DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader>
@@ -327,13 +352,28 @@ export default function ProductTable() {
                   )}
                 />
 
-                {/* Type with dropdown */}
+                {/* Brand */}
                 <FormField
                   control={form.control}
-                  name="type"
+                  name="brand"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Item Type</FormLabel>
+                      <FormLabel>Brand (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. ASUS, Dell, Samsung" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Category with dropdown */}
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Category</FormLabel>
                       {!addingNewType ? (
                         <FormControl>
                           <Select
@@ -347,63 +387,14 @@ export default function ProductTable() {
                             }}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a type" />
+                              <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
                             <SelectContent>
                               {productTypes.map((type) => (
-                                <div
-                                  key={type}
-                                  className="flex items-center justify-between px-2"
-                                >
-                                  <SelectItem value={type}>{type}</SelectItem>
-                                  <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                      <Button
-                                        type="button"
-                                        size="icon"
-                                        variant="ghost"
-                                        className="h-6 w-6 text-red-600 hover:bg-red-100 rounded-full"
-                                      >
-                                        ✕
-                                      </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                      <AlertDialogHeader>
-                                        <AlertDialogTitle>
-                                          Delete Type
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                          Are you sure you want to delete{" "}
-                                          <span className="font-semibold">
-                                            {type}
-                                          </span>{" "}
-                                          from the list?
-                                        </AlertDialogDescription>
-                                      </AlertDialogHeader>
-                                      <AlertDialogFooter>
-                                        <AlertDialogCancel>
-                                          Cancel
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction
-                                          className="bg-red-600 text-white hover:bg-red-700"
-                                          onClick={() => {
-                                            setProductTypes((prev) =>
-                                              prev.filter((t) => t !== type)
-                                            );
-                                            if (field.value === type) {
-                                              field.onChange(""); // clear selection if deleted
-                                            }
-                                          }}
-                                        >
-                                          Delete
-                                        </AlertDialogAction>
-                                      </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                  </AlertDialog>
-                                </div>
+                                <SelectItem key={type} value={type}>{type}</SelectItem>
                               ))}
                               <SelectItem value="add_new">
-                                ➕ Add new type
+                                ➕ Add new category
                               </SelectItem>
                             </SelectContent>
                           </Select>
@@ -411,7 +402,7 @@ export default function ProductTable() {
                       ) : (
                         <div className="flex gap-2">
                           <Input
-                            placeholder="Enter new type"
+                            placeholder="Enter new category"
                             value={newType}
                             onChange={(e) => setNewType(e.target.value)}
                           />
@@ -460,10 +451,10 @@ export default function ProductTable() {
                 {/* Cover image */}
                 <FormField
                   control={form.control}
-                  name="coverImage"
+                  name="image"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Cover Image URL</FormLabel>
+                      <FormLabel>Main Image URL</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="https://example.com/image.jpg"
@@ -507,7 +498,8 @@ export default function ProductTable() {
                           <Input
                             type="number"
                             placeholder="e.g. 1299"
-                            {...field}
+                            value={field.value === 0 ? "" : field.value}
+                            onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -524,7 +516,8 @@ export default function ProductTable() {
                           <Input
                             type="number"
                             placeholder="e.g. 10"
-                            {...field}
+                            value={field.value === 0 ? "" : field.value}
+                            onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -561,8 +554,8 @@ export default function ProductTable() {
             <TableHead>Item</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Description</TableHead>
-            <TableHead className="text-right">Price</TableHead>
-            <TableHead className="text-right">Quantity</TableHead>
+            <TableHead >Price</TableHead>
+            <TableHead >Quantity</TableHead>
             <TableHead>Updated</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
@@ -588,7 +581,7 @@ export default function ProductTable() {
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <img
-                      src={item.coverImage || "/placeholder.svg"}
+                      src={item.image || "/placeholder.svg"}
                       alt={item.name}
                       className="h-12 w-12 rounded-md border object-cover"
                     />
@@ -600,8 +593,8 @@ export default function ProductTable() {
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>{item.type}</TableCell>
-                <TableCell>{item.description}</TableCell>
+                <TableCell>{item.category}</TableCell>
+                <TableCell>{item.description.slice(0,30)}</TableCell>
                 <TableCell className="text-right">
                   ₹{item.price.toFixed(2)}
                 </TableCell>
@@ -628,10 +621,10 @@ export default function ProductTable() {
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction
-                          className="bg-blue-600 text-white hover:bg-blue-700"
+                          className="bg-green-600 text-white hover:bg-green-700"
                           onClick={() => handleEditClick(item)}
                         >
-                          Yes, Edit
+                          Yes
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>

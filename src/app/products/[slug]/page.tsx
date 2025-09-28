@@ -124,7 +124,7 @@ export default function ProductPage() {
           
           {/* Thumbnail Images */}
           {images.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hidden">
               {images.map((img, index) => (
                 <button
                   key={index}
@@ -224,6 +224,26 @@ export default function ProductPage() {
                 <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-medium">Cashback</span>
                 <span>Upto ₹{Math.round(product.price * 0.03)} cashback with Amazon Pay</span>
               </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="space-y-4 pt-6 sm:hidden">
+            <div className="flex flex-col gap-2">
+              <button 
+                onClick={handleAddToCart}
+                className="flex-1 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={(product.stock || product.quantity) === 0}
+              >
+                Add to Cart
+              </button>
+              <button 
+                onClick={handleBuyNow}
+                className="flex-1 cursor-pointer bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={(product.stock || product.quantity) === 0}
+              >
+                Buy Now
+              </button>
             </div>
           </div>
 
@@ -372,7 +392,7 @@ export default function ProductPage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="space-y-4 pt-6">
+          <div className="space-y-4 pt-6 hidden sm:block">
             <div className="flex gap-4">
               <button 
                 onClick={handleAddToCart}

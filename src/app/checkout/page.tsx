@@ -4,14 +4,19 @@ import type React from "react"
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
+import { AuthDialog } from "@/components/auth-dialog"
 
 type CartItem = { productId: string; qty: number; title?: string; price?: number; image?: string }
 
 export default function CheckoutPage() {
+  const { data: session, status } = useSession()
   const router = useRouter()
   const [items, setItems] = useState<CartItem[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showAuthDialog, setShowAuthDialog] = useState(false)
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
 
   // Address
   const [fullName, setFullName] = useState("")
@@ -82,6 +87,41 @@ export default function CheckoutPage() {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  // Show auth dialog if not authenticated
+  if (status === 'loading') {
+    return (
+      <main className="mx-auto max-w-5xl px-4 py-8">
+        <div className="text-center">Loading...</div>
+      </main>
+    )
+  }
+
+  if (!session) {
+    return (
+      <main className="mx-auto max-w-5xl px-4 py-8">
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl font-semibold">Sign in to Checkout</h1>
+          <p className="text-muted-foreground">Please sign in to continue with your order</p>
+          <div className="space-x-4">
+            <button
+              onClick={() => { setAuthMode('signin'); setShowAuthDialog(true) }}
+              className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              Sign In
+            </button>
+            <button
+              onClick={() => { setAuthMode('signup'); setShowAuthDialog(true) }}
+              className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-4 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+            >
+              Sign Up
+            </button>
+          </div>
+        </div>
+        <AuthDialog open={showAuthDialog} onOpenChange={setShowAuthDialog} mode={authMode} />
+      </main>
+    )
   }
 
   return (

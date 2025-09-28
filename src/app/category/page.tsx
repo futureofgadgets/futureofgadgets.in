@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link"
-import { CATEGORIES } from "@/lib/data/products"
+import Image from "next/image"
+import { CATEGORIES, CATEGORY_IMAGES } from "@/lib/data/products"
 import { useEffect, useState } from "react"
 
 export default function CategoriesPage() {
   const [allCategories, setAllCategories] = useState<string[]>(CATEGORIES as any);
 
   useEffect(() => {
-    // Fetch products to get dynamic categories from admin-added products
     fetch("/api/products")
       .then(res => res.json())
       .then(products => {
@@ -26,18 +26,32 @@ export default function CategoriesPage() {
         <p className="text-muted-foreground mt-2">Browse our electronics and computer products</p>
       </header>
       
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {allCategories.map((category) => (
-          <Link
-            key={category}
-            href={`/category/${category.toLowerCase()}`}
-            className="p-6 border rounded-lg hover:shadow-md transition-shadow bg-card"
-          >
-            <div className="text-center">
-              <h3 className="font-semibold">{category}</h3>
-            </div>
-          </Link>
-        ))}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        {allCategories.map((category) => {
+          const imageUrl =
+            CATEGORY_IMAGES[category] ||
+            "https://via.placeholder.com/300x200?text=No+Image"
+
+          return (
+            <Link
+              key={category}
+              href={`/category/${category.toLowerCase()}`}
+              className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow bg-card"
+            >
+              <div className="relative w-full h-32">
+                <Image
+                  src={imageUrl}
+                  alt={category}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="p-3 text-center">
+                <h3 className="font-semibold">{category}</h3>
+              </div>
+            </Link>
+          )
+        })}
       </div>
     </main>
   )

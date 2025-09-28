@@ -45,7 +45,7 @@ export default function ProductCard({ product }: { product: Product }) {
               {product.quantity <= 5 ? "Low stock" : "In stock"}
             </span>
           </div>
-          <Button
+          <Button className="cursor-pointer hover:bg-blue-500"
             aria-label={`Add ${product.name} to cart`}
             onClick={() => {
               addToCart({

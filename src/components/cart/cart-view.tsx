@@ -4,12 +4,17 @@ import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { getCart, updateQty, removeFromCart, clearCart } from "@/lib/cart"
+import { useSession } from "next-auth/react"
+import { AuthDialog } from "@/components/auth-dialog"
 import Link from "next/link"
 
 type CartItem = ReturnType<typeof getCart>[number]
 
 export default function CartView() {
+  const { data: session } = useSession()
   const [items, setItems] = useState<CartItem[]>([])
+  const [showAuthDialog, setShowAuthDialog] = useState(false)
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
 
   useEffect(() => {
     setItems(getCart())
@@ -111,13 +116,20 @@ export default function CartView() {
               >
                 Clear Cart
               </Button>
-              <Link href="/checkout">
-              <Button>Checkout</Button>
-              </Link>
+              {session ? (
+                <Link href="/checkout">
+                  <Button>Checkout</Button>
+                </Link>
+              ) : (
+                <Button onClick={() => { setAuthMode('signin'); setShowAuthDialog(true) }}>
+                  Checkout
+                </Button>
+              )}
             </div>
           </div>
         </>
       )}
+      <AuthDialog open={showAuthDialog} onOpenChange={setShowAuthDialog} mode={authMode} />
     </div>
   )
 }
