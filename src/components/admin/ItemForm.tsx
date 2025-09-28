@@ -67,8 +67,6 @@ const itemSchema = z.object({
   name: z.string().min(1, "Name is required"),
   type: z.string().min(1, "Type is required"),
   description: z.string().min(1, "Description is required"),
-  coverImage: z.string().url("Must be a valid URL"),
-  images: z.string().min(1, "At least one image is required"),
   price: z.number().min(0, "Price is required"),
   quantity: z.number().min(0, "Quantity is required"),
 });
@@ -93,11 +91,12 @@ export default function ProductTable() {
     name: "",
     type: "",
     description: "",
-    coverImage: "",
-    images: "",
     price: 0,
     quantity: 0,
   };
+
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<ItemFormValues>({
     resolver: zodResolver(itemSchema),
@@ -113,12 +112,8 @@ export default function ProductTable() {
           name: p.name ?? p.title ?? "Untitled",
           type: p.type ?? p.category ?? "General",
           description: p.description ?? "",
-          coverImage: p.coverImage ?? p.image ?? "/placeholder.svg",
-          images:
-            p.images ??
-            (p.image
-              ? [p.image]
-              : p.images?.split?.(",").map((s: string) => s.trim()) ?? []),
+          coverImage: p.image ?? "/placeholder.svg",
+          images: p.image ? [p.image] : [],
           price: Number(p.price ?? 0),
           quantity: Number(p.quantity ?? 0),
           updatedAt: p.updatedAt ?? new Date().toISOString(),
@@ -146,11 +141,17 @@ export default function ProductTable() {
   }, [data, query]);
 
   useEffect(() => {
-    if (open && !editId) form.reset(defaultValues);
+    if (open && !editId) {
+      form.reset(defaultValues);
+      setSelectedImage(null);
+      setImagePreview(null);
+    }
     if (!open) {
       setEditId(null);
       setAddingNewType(false);
       setNewType("");
+      setSelectedImage(null);
+      setImagePreview(null);
     }
   }, [open, editId]);
 
@@ -160,12 +161,22 @@ export default function ProductTable() {
       name: item.name,
       type: item.type,
       description: item.description,
-      coverImage: item.coverImage,
-      images: item.images.join(", "),
       price: item.price,
       quantity: item.quantity,
     });
+    setImagePreview(item.coverImage);
+    setSelectedImage(null);
     setOpen(true);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onload = () => setImagePreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -194,30 +205,40 @@ export default function ProductTable() {
   };
 
   const onSubmit = async (values: ItemFormValues) => {
-    const imagesArr = values.images
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-
     try {
+      const formData = new FormData();
+      formData.append('name', values.name);
+      formData.append('category', values.type);
+      formData.append('description', values.description);
+      formData.append('price', values.price.toString());
+      formData.append('stock', values.quantity.toString());
+      formData.append('brand', '');
+      
+      if (selectedImage) {
+        formData.append('image', selectedImage);
+      }
+
       if (editId) {
         const res = await fetch(`/api/products/${editId}`, {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...values,
-            images: imagesArr,
-            category: values.type,
-            image: values.coverImage,
-            stock: values.quantity
-          })
+          body: formData
         });
         if (!res.ok) throw new Error("Failed to update");
         
+        const updatedProduct = await res.json();
         setData((prev) =>
           prev.map((it) =>
             it.id === editId
-              ? { ...it, ...values, images: imagesArr, updatedAt: new Date().toISOString() }
+              ? { 
+                  ...it, 
+                  name: values.name,
+                  type: values.type,
+                  description: values.description,
+                  price: values.price,
+                  quantity: values.quantity,
+                  coverImage: updatedProduct.image || it.coverImage,
+                  updatedAt: new Date().toISOString() 
+                }
               : it
           )
         );
@@ -225,25 +246,20 @@ export default function ProductTable() {
       } else {
         const res = await fetch("/api/products", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...values,
-            images: imagesArr,
-            category: values.type,
-            image: values.coverImage,
-            stock: values.quantity,
-            slug: values.name.toLowerCase().replace(/\s+/g, "-"),
-            title: values.name,
-            status: "active"
-          })
+          body: formData
         });
         if (!res.ok) throw new Error("Failed to add");
         
         const newProduct = await res.json();
         const newItem: Item = {
           id: newProduct.id,
-          ...values,
-          images: imagesArr,
+          name: values.name,
+          type: values.type,
+          description: values.description,
+          price: values.price,
+          quantity: values.quantity,
+          coverImage: newProduct.image || '/placeholder.svg',
+          images: newProduct.image ? [newProduct.image] : [],
           updatedAt: new Date().toISOString(),
         };
         setData((prev) => [newItem, ...prev]);
@@ -251,6 +267,8 @@ export default function ProductTable() {
       }
 
       form.reset(defaultValues);
+      setSelectedImage(null);
+      setImagePreview(null);
       setOpen(false);
       setEditId(null);
     } catch (err: any) {
@@ -362,35 +380,24 @@ export default function ProductTable() {
                   )}
                 />
 
-                {/* Cover image */}
-                <FormField
-                  control={form.control}
-                  name="coverImage"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Cover Image URL</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://example.com/image.jpg" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                {/* Image Upload */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Product Image</label>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                  {imagePreview && (
+                    <div className="mt-2">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="h-32 w-32 object-cover rounded-md border"
+                      />
+                    </div>
                   )}
-                />
-
-                {/* Additional images */}
-                <FormField
-                  control={form.control}
-                  name="images"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Additional Images (comma separated URLs)</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="https://img1.jpg, https://img2.jpg" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                </div>
 
                 {/* Price + Quantity */}
                 <div className="grid grid-cols-2 gap-2">
