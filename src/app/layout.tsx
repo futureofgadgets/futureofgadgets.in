@@ -61,7 +61,7 @@ export default function RootLayout({
           // enableSystem
           >
             <Navbar />
-            <div className="pt-14">
+            <div className="pt-16">
               {children}
             </div>
             <Toaster />
