@@ -11,6 +11,10 @@ export async function GET() {
   }
   
   try {
+    if (!session.user?.email) {
+      return NextResponse.json({ error: "No email found" }, { status: 400 })
+    }
+    
     // Find user by email
     const user = await prisma.user.findUnique({
       where: { email: session.user.email }
@@ -39,6 +43,10 @@ export async function POST(request: Request) {
   }
   
   try {
+    if (!session.user?.email) {
+      return NextResponse.json({ error: "No email found" }, { status: 400 })
+    }
+    
     // Find or create user in database
     let user = await prisma.user.findUnique({
       where: { email: session.user.email }
