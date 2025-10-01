@@ -4,13 +4,15 @@ import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
 export async function GET() {
-  const session = await getServerSession(authOptions)
-  
-  if (!session || (session.user?.role !== 'admin' && session.user?.email !== 'admin@electronic.com')) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-  
   try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session || (session.user?.role !== 'admin' && session.user?.email !== 'admin@electronic.com')) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    
+    console.log('Fetching orders for admin:', session.user?.email)
+    
     const orders = await prisma.order.findMany({
       include: {
         user: {
@@ -27,26 +29,36 @@ export async function GET() {
       }
     })
 
+    console.log('Found orders:', orders.length)
     return NextResponse.json({ orders })
   } catch (error) {
     console.error('Error fetching orders:', error)
-    return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 })
+    return NextResponse.json({ 
+      error: "Failed to fetch orders",
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
   }
 }
 
 export async function PATCH(request: Request) {
-  const session = await getServerSession(authOptions)
-  
-  if (!session || (session.user?.role !== 'admin' && session.user?.email !== 'admin@electronic.com')) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-  
   try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session || (session.user?.role !== 'admin' && session.user?.email !== 'admin@electronic.com')) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    
     const { orderId, status, billUrl } = await request.json()
+    
+    if (!orderId) {
+      return NextResponse.json({ error: "Order ID is required" }, { status: 400 })
+    }
     
     const updateData: any = {}
     if (status) updateData.status = status
     if (billUrl) updateData.billUrl = billUrl
+    
+    console.log('Updating order:', orderId, 'with data:', updateData)
     
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
@@ -63,9 +75,13 @@ export async function PATCH(request: Request) {
       }
     })
 
+    console.log('Order updated successfully:', updatedOrder.id)
     return NextResponse.json({ order: updatedOrder })
   } catch (error) {
     console.error('Error updating order:', error)
-    return NextResponse.json({ error: "Failed to update order" }, { status: 500 })
+    return NextResponse.json({ 
+      error: "Failed to update order",
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
   }
 }

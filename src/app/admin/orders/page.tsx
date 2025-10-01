@@ -111,12 +111,19 @@ export default function AdminOrdersPage() {
     }
     const fetchOrders = async () => {
       try {
-        const response = await fetch("/api/admin/orders");
-        if (!response.ok) throw new Error("Failed to fetch orders");
+        const response = await fetch("/api/admin/orders", {
+          cache: 'no-store'
+        });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to fetch orders");
+        }
         const data = await response.json();
-        setOrders(data.orders);
-      } catch (err) {
-        toast.error("Failed to load orders");
+        console.log('Fetched orders:', data);
+        setOrders(data.orders || []);
+      } catch (err: any) {
+        console.error('Fetch orders error:', err);
+        toast.error(`Failed to load orders: ${err.message}`);
       } finally {
         setLoading(false);
       }
@@ -177,31 +184,20 @@ export default function AdminOrdersPage() {
 
       const base64 = await base64Promise;
 
-      // Upload using the same API as products
-      const uploadRes = await fetch("/api/upload", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ images: [base64] }),
-      });
-
-      const uploadResult = await uploadRes.json();
-      if (!uploadResult.success) throw new Error(uploadResult.error);
-
-      const billUrl = uploadResult.files[0];
-
-      // Update order with bill URL
+      // Update order with bill URL directly (base64)
       const response = await fetch("/api/admin/orders", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           orderId: selectedOrder.id, 
-          billUrl: billUrl 
+          billUrl: base64 
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to update order with bill");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update order with bill");
+      }
 
       const data = await response.json();
       const updatedOrder = data.order;
@@ -214,8 +210,9 @@ export default function AdminOrdersPage() {
       );
 
       toast.success("Bill uploaded successfully");
-    } catch (error) {
-      toast.error("Failed to upload bill");
+    } catch (error: any) {
+      console.error('Bill upload error:', error);
+      toast.error(`Failed to upload bill: ${error.message}`);
     } finally {
       setUploadingBill(false);
     }
