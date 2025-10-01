@@ -12,18 +12,7 @@ export async function GET() {
     }
     
     const orders = await prisma.order.findMany({
-      select: {
-        id: true,
-        userId: true,
-        total: true,
-        status: true,
-        createdAt: true,
-        updatedAt: true,
-        billUrl: true,
-        paymentMethod: true,
-        deliveryDate: true,
-        items: true,
-        address: true,
+      include: {
         user: {
           select: {
             id: true,
@@ -71,18 +60,7 @@ export async function PATCH(request: Request) {
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: updateData,
-      select: {
-        id: true,
-        userId: true,
-        total: true,
-        status: true,
-        createdAt: true,
-        updatedAt: true,
-        billUrl: true,
-        paymentMethod: true,
-        deliveryDate: true,
-        items: true,
-        address: true,
+      include: {
         user: {
           select: {
             id: true,
