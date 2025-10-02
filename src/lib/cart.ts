@@ -42,11 +42,16 @@ export function addToCart(item: CartItem) {
   const idx = items.findIndex((i) => i.id === item.id)
   if (idx >= 0) {
     items[idx].qty = (items[idx].qty || 1) + 1
-    toast.success(`${item.name} quantity updated in cart`)
   } else {
     items.push({ ...item, qty: 1 })
-    toast.success(`${item.name} added to cart`)
   }
+  toast.success(`Added to Cart`, {
+    description: `${item.name} has been added to your cart.`,
+    action: {
+      label: "View Cart",
+      onClick: () => window.location.href = "/cart"
+    }
+  })
   write(items)
 }
 
@@ -67,4 +72,8 @@ export function removeFromCart(id: string) {
 
 export function clearCart() {
   write([])
+  // Trigger cart update event to refresh navbar
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("v0-cart-updated", { detail: { items: [] } }))
+  }
 }

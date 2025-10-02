@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { AuthDialog } from "@/components/auth-dialog"
+import { clearCart } from "@/lib/cart"
 
 type CartItem = { productId: string; qty: number; title?: string; price?: number; image?: string }
 
@@ -77,9 +78,8 @@ export default function CheckoutPage() {
         const j = await res.json().catch(() => ({}))
         throw new Error(j?.error || "Failed to place order")
       }
-      // Clear cart (attempt common keys)
-      localStorage.removeItem("cart")
-      localStorage.removeItem("v0_cart")
+      // Clear cart and update navbar
+      clearCart()
 
       router.push("/checkout/success")
     } catch (err: any) {
