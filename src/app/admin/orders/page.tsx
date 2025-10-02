@@ -267,19 +267,36 @@ export default function AdminOrdersPage() {
   const handleBillUpload = async (file: File) => {
     if (!selectedOrder) return;
 
-    // Validate file using the same method as products
-    const { validateImageFile } = await import("@/lib/image-utils");
-    const validation = validateImageFile(file);
-    if (!validation.valid) {
-      toast.error(validation.error || "Invalid file");
+    // Validate file type
+    if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
+      toast.error("File must be an image or PDF");
+      return;
+    }
+
+    // Check file size (5MB limit)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast.error("File must be less than 5MB");
       return;
     }
 
     setUploadingBill(true);
     try {
-      // Convert to base64 with smaller size for bills
-      const { convertFileToBase64 } = await import("@/lib/image-utils");
-      const base64 = await convertFileToBase64(file, 800, 0.6);
+      let base64: string;
+
+      if (file.type.startsWith("image/")) {
+        // Convert image to base64 with higher quality
+        const { convertFileToBase64 } = await import("@/lib/image-utils");
+        base64 = await convertFileToBase64(file, 1600, 0.95);
+      } else {
+        // For PDFs, convert directly to base64
+        const reader = new FileReader();
+        base64 = await new Promise<string>((resolve, reject) => {
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
       
       // Check if base64 is too large (MongoDB has 16MB document limit)
       if (base64.length > 10 * 1024 * 1024) { // 10MB limit
@@ -1007,39 +1024,51 @@ export default function AdminOrdersPage() {
                                 View Bill
                               </button>
                             </DialogTrigger>
-                            <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
-                              <DialogHeader>
-                                <DialogTitle>
+                            <DialogContent className="sm:max-w-6xl max-h-[95vh] overflow-hidden">
+                              <DialogHeader className="pb-4">
+                                <DialogTitle className="text-xl font-semibold">
                                   Bill - Order #{selectedOrder.id}
                                 </DialogTitle>
                               </DialogHeader>
-                              <div className="py-4">
-                                <div className="text-center">
-                                  <img
-                                    src={selectedOrder.billUrl}
-                                    alt="Bill"
-                                    className="max-w-full h-auto rounded border mx-auto"
-                                    onError={(e) => {
-                                      const target = e.target as HTMLImageElement;
-                                      target.src = "/placeholder.svg";
-                                    }}
-                                  />
-                                  <div className="mt-4">
-                                    <button
-                                      onClick={() => {
-                                        const link = document.createElement("a");
-                                        link.href = selectedOrder.billUrl!;
-                                        link.download = `bill-${selectedOrder.id}.jpg`;
-                                        document.body.appendChild(link);
-                                        link.click();
-                                        document.body.removeChild(link);
-                                      }}
-                                      className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 flex items-center gap-2 mx-auto"
-                                    >
-                                      <Download className="h-4 w-4" />
-                                      Download Bill
-                                    </button>
+                              <div className="flex flex-col h-full">
+                                <div className="flex-1 overflow-auto bg-gray-50 rounded-lg p-4">
+                                  <div className="flex justify-center items-center min-h-[500px]">
+                                    {selectedOrder.billUrl?.startsWith('data:application/pdf') ? (
+                                      <iframe
+                                        src={selectedOrder.billUrl}
+                                        className="w-full h-[70vh] rounded-lg shadow-lg bg-white border-2 border-gray-200"
+                                        title="Bill PDF"
+                                      />
+                                    ) : (
+                                      <img
+                                        src={selectedOrder.billUrl}
+                                        alt="Bill"
+                                        className="max-w-full max-h-full object-contain rounded-lg shadow-lg bg-white border-2 border-gray-200"
+                                        style={{ maxHeight: '70vh' }}
+                                        onError={(e) => {
+                                          const target = e.target as HTMLImageElement;
+                                          target.src = "/placeholder.svg";
+                                        }}
+                                      />
+                                    )}
                                   </div>
+                                </div>
+                                <div className="flex justify-center gap-3 pt-4 border-t">
+                                  <button
+                                    onClick={() => {
+                                      const link = document.createElement("a");
+                                      link.href = selectedOrder.billUrl!;
+                                      const fileExtension = selectedOrder.billUrl?.startsWith('data:application/pdf') ? 'pdf' : 'jpg';
+                                      link.download = `bill-order-${selectedOrder.id}.${fileExtension}`;
+                                      document.body.appendChild(link);
+                                      link.click();
+                                      document.body.removeChild(link);
+                                    }}
+                                    className="bg-green-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-green-700 flex items-center gap-2 transition-colors"
+                                  >
+                                    <Download className="h-4 w-4" />
+                                    Download Bill
+                                  </button>
                                 </div>
                               </div>
                             </DialogContent>
@@ -1048,7 +1077,8 @@ export default function AdminOrdersPage() {
                             onClick={() => {
                               const link = document.createElement("a");
                               link.href = selectedOrder.billUrl!;
-                              link.download = `bill-${selectedOrder.id}.jpg`;
+                              const fileExtension = selectedOrder.billUrl?.startsWith('data:application/pdf') ? 'pdf' : 'jpg';
+                              link.download = `bill-order-${selectedOrder.id}.${fileExtension}`;
                               document.body.appendChild(link);
                               link.click();
                               document.body.removeChild(link);
@@ -1092,7 +1122,7 @@ export default function AdminOrdersPage() {
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                         <input
                           type="file"
-                          accept="image/*"
+                          accept="image/*,application/pdf"
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
