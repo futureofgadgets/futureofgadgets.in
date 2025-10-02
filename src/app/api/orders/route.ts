@@ -34,7 +34,7 @@ export async function GET() {
     // Use raw MongoDB query to avoid Prisma date parsing issues
     const orders = await prisma.$runCommandRaw({
       find: 'Order',
-      filter: {},
+      filter: { userId: { $oid: user.id } },
       sort: { createdAt: -1 }
     })
     
@@ -53,7 +53,7 @@ export async function GET() {
       updatedAt: typeof order.updatedAt === 'string' ? order.updatedAt : order.updatedAt.$date
     }))
     
-    console.log('Found orders:', transformedOrders.length)
+    console.log('Found orders:', transformedOrders.length, 'for user:', user.id)
     return NextResponse.json({ orders: transformedOrders })
   } catch (error) {
     console.error('Orders fetch error:', error)
