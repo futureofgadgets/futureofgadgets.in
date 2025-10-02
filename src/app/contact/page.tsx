@@ -35,7 +35,7 @@ export default function ContactPage() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Contact Us</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Have questions? We're here to help. Reach out to us through any of the following channels.
+            Have questions? We&apos;re here to help. Reach out to us through any of the following channels.
           </p>
         </div>
 
@@ -87,7 +87,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-900">Email</h3>
                     <p className="text-gray-600">support@electronic.com</p>
-                    <p className="text-sm text-gray-500">We'll respond within 24 hours</p>
+                    <p className="text-sm text-gray-500">We&apos;ll respond within 24 hours</p>
                   </div>
                 </div>
                 
@@ -217,7 +217,7 @@ export default function ContactPage() {
                   >
                     Send Message
                   </Button>
-                  <p className="text-sm text-gray-500">We'll get back to you within 24 hours</p>
+                  <p className="text-sm text-gray-500">We&apos;ll get back to you within 24 hours</p>
                 </div>
               </form>
             </div>

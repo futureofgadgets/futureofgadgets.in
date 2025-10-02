@@ -15,7 +15,7 @@ export default function AboutPage() {
           <h1 className="text-4xl font-bold text-gray-900 mb-6">About Electronic Web</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Your trusted destination for quality electronics and cutting-edge technology. 
-            We're committed to making the latest innovations accessible to everyone.
+            We&apos;re committed to making the latest innovations accessible to everyone.
           </p>
         </div>
 
@@ -55,7 +55,7 @@ export default function AboutPage() {
                 our high standards before it reaches your doorstep.
               </p>
               <p className="text-gray-600 leading-relaxed">
-                Today, we're proud to serve thousands of customers globally, offering everything 
+                Today, we&apos;re proud to serve thousands of customers globally, offering everything 
                 from laptops and smartphones to smart home devices and gaming accessories.
               </p>
             </div>
