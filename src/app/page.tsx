@@ -30,7 +30,7 @@ export default function HomePage() {
             </h2>
             <Link
               href="/category"
-              className="text-blue-500 hover:text-blue-600 text-sm font-medium"
+              className="text-blue-500 hover:text-blue-600 hover:underline text-sm font-medium"
             >
               VIEW ALL
             </Link>
@@ -41,7 +41,7 @@ export default function HomePage() {
               (category) => (
                 <Link
                   key={category}
-                  href={`/category/${category.toLowerCase()}`}
+                  href={category === "Show All" ? "/category" : category === "Laptop Accessories" ? "/category/laptop-accessories" : `/category/${category.toLowerCase()}`}
                   className="flex flex-col items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
                 >
                   <div className="w-13 h-13 sm:w-16 sm:h-16 bg-blue-50 dark:bg-blue-900 rounded-full flex items-center justify-center mb-2">
@@ -88,7 +88,7 @@ export default function HomePage() {
             </div>
             <Link
               href="/products"
-              className="text-blue-500 hover:text-blue-600 text-sm font-medium"
+              className="text-blue-500 hover:text-blue-600 text-sm font-medium hover:underline"
             >
               VIEW ALL
             </Link>
@@ -115,7 +115,7 @@ export default function HomePage() {
             </h2>
             <Link
               href="/products"
-              className="text-blue-500 hover:text-blue-600 text-sm font-medium"
+              className="text-blue-500 hover:text-blue-600 text-sm font-medium hover:underline "
             >
               VIEW ALL
             </Link>
@@ -142,7 +142,7 @@ export default function HomePage() {
             </h2>
             <Link
               href="/products"
-              className="text-blue-500 hover:text-blue-600 text-sm font-medium"
+              className="text-blue-500 hover:text-blue-600 text-sm font-medium hover:underline"
             >
               VIEW ALL
             </Link>
