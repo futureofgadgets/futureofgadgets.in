@@ -11,12 +11,12 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         name: data.name,
         slug: data.slug,
         category: data.category,
-        description: data.description?.replace(/\./g, '\n') || data.description,
-        frontImage: data.frontImage,
+        description: data.description || '',
+        frontImage: data.frontImage || '',
         images: data.images || [],
-        price: data.price,
-        stock: data.quantity || data.stock || 0,
-        quantity: data.quantity || data.stock || 0,
+        price: Number(data.price),
+        stock: Number(data.quantity) || Number(data.stock) || 0,
+        quantity: Number(data.quantity) || Number(data.stock) || 0,
         brand: data.brand || '',
         screenSize: data.screenSize || '',
         hardDiskSize: data.hardDiskSize || '',
@@ -26,7 +26,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         graphics: data.graphics || '',
         offers: data.offers || '',
         status: data.status || 'active',
-        sku: data.sku
+        sku: data.sku || ''
       }
     });
     return NextResponse.json(product);
