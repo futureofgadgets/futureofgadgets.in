@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
     const code = generateVerificationCode()
     const expires = generateCodeExpiry()
-    const hashedCode = await bcrypt.hash(code, 10)
+    const hashedCode = await bcrypt.hash(code, 4)
 
     await prisma.user.update({
       where: { id: user.id },
@@ -29,11 +29,11 @@ export async function POST(req: Request) {
       }
     })
 
-    await sendEmail(
+    sendEmail(
       email,
       'Reset your password - Electronic Web',
       getPasswordResetEmailTemplate(code, email)
-    )
+    ).catch(err => console.log('⚠️ Email send failed:', err.message))
 
     return NextResponse.json({ success: true })
   } catch (error) {

@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'User already exists' }, { status: 400 })
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12)
+    const hashedPassword = await bcrypt.hash(password, 10)
     const isAdmin = email === 'admin@electronic.com'
 
     if (isAdmin) {
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
 
     const code = generateVerificationCode()
     const expires = generateCodeExpiry()
-    const hashedCode = await bcrypt.hash(code, 10)
+    const hashedCode = await bcrypt.hash(code, 4)
 
     const newUser = await prisma.user.create({
       data: {
