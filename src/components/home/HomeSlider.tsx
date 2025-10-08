@@ -69,7 +69,7 @@ const HeaderSlider = () => {
         {sliderData.map((slide, index) => (
           <Link href={(slide as any).link || '/products'} key={slide.id} className="min-w-full block">
             <div
-              className="relative py-16 md:py-24 px-5 md:px-14 mt-6 cursor-pointer overflow-hidden sm:min-h-[450px] flex items-center"
+              className="relative py-16 md:py-24 px-5 md:px-14 mt-6 cursor-pointer overflow-hidden min-h-[200px] sm:min-h-[350px] flex items-center"
               style={{
                 backgroundImage: (slide as any).image ? `url(${(slide as any).image})` : 'none',
                 backgroundSize: 'cover',

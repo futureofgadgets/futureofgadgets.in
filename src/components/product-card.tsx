@@ -16,33 +16,33 @@ export default function ProductCard({ product }: { product: Product }) {
       : 0;
 
   return (
-    <div className="bg-white p-4">
-      <Link href={`/products/${product.slug}`} className="block overflow-hidden mb-4">
+    <div className="bg-white p-2 sm:p-3 md:p-4">
+      <Link href={`/products/${product.slug}`} className="block overflow-hidden mb-2 sm:mb-3 md:mb-4">
         <CloudinaryImage
           src={product.frontImage || product.image || "/no-image.svg"}
           alt={`${product.name} image`}
           width={500}
           height={300}
-          className="h-48 w-full object-contain transition-transform duration-300 hover:scale-110"
+          className="h-32 sm:h-40 md:h-48 w-full object-contain transition-transform duration-300 hover:scale-110"
         />
       </Link>
       <Link href={`/products/${product.slug}`} className="block">
-        <h3 className="text-sm font-medium text-gray-800 hover:text-blue-600 line-clamp-2">
+        <h3 className="text-xs sm:text-sm font-medium text-gray-800 hover:text-blue-600 line-clamp-2 mb-1">
           {product.name}
         </h3>
       </Link>
-      <div className="text-xs text-gray-500 mb-3">{product.brand}</div>
-      <div className="mb-3">
-        <div className="flex items-baseline gap-2 mb-1">
-          <span className="text-lg font-semibold text-gray-900">
+      <div className="text-xs text-gray-500 mb-2 sm:mb-3">{product.brand}</div>
+      <div className="mb-2 sm:mb-3">
+        <div className="flex items-baseline gap-1 sm:gap-2 mb-1 flex-wrap">
+          <span className="text-base sm:text-lg font-semibold text-gray-900">
             ₹{product.price.toFixed(2)}
           </span>
           {discounted && (
             <>
-              <span className="text-sm text-gray-400 line-through">
+              <span className="text-xs sm:text-sm text-gray-400 line-through">
                 ₹{product.mrp?.toFixed(2)}
               </span>
-              <span className="text-sm text-green-600 font-medium">
+              <span className="text-xs sm:text-sm text-green-600 font-medium">
                 {discountPct}% off
               </span>
             </>
@@ -53,7 +53,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </span>
       </div>
       <Button
-        className="w-full bg-blue-600 hover:bg-blue-700"
+        className="w-full bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm py-1.5 sm:py-2"
         onClick={() => {
           addToCart({
             id: product.id,
@@ -61,6 +61,10 @@ export default function ProductCard({ product }: { product: Product }) {
             name: product.name,
             price: product.price,
             image: product.frontImage || product.image,
+          });
+          toast({
+            title: "Added to cart",
+            description: `${product.name} has been added to your cart.`,
           });
         }}
         disabled={product.quantity <= 0}

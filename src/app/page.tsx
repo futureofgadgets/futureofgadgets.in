@@ -15,7 +15,7 @@ export default function HomePage() {
     <main className="min-h-screen bg-white dark:bg-gray-900">
       {/* Hero Slider */}
       <section className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
-        <div className="mx-auto max-w-[1400px]">
+        <div className="mx-auto md:px-4">
           <HeaderSlider />
         </div>
       </section>
@@ -23,7 +23,7 @@ export default function HomePage() {
       {/* Quick Categories */}
       <section className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
         <div className="mx-auto max-w-[1400px] px-6 py-5">
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 ">
             {[
               { name: 'Laptops', href: '/category/laptops' },
               { name: 'Monitors', href: '/category/monitors' },
@@ -33,7 +33,7 @@ export default function HomePage() {
               { name: 'Accessories', href: '/category/laptop-accessories' }
             ].map((cat) => (
               <Link key={cat.name} href={cat.href} className="group">
-                <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded p-4 text-center hover:bg-blue-50 dark:hover:bg-gray-800 hover:border-blue-400 transition-all">
+                <div className="bg-gray-50 dark:bg-gray-900 border overflow-hidden border-gray-200 dark:border-gray-700 rounded p-4 text-center hover:bg-blue-50 dark:hover:bg-gray-800 hover:border-blue-400 transition-all">
                   <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">{cat.name}</h3>
                 </div>
               </Link>
@@ -49,7 +49,7 @@ export default function HomePage() {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Featured Products</h2>
             <Link href="/products" className="text-blue-600 hover:text-blue-700 font-semibold text-sm">View All →</Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 ">
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-3 ">
             {popularProducts.slice(0, 6).map((product) => (
                 <ProductCard key={product.id} product={product} />
             ))}
@@ -88,7 +88,7 @@ export default function HomePage() {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Best Sellers</h2>
             <Link href="/products" className="text-blue-600 hover:text-blue-700 font-semibold text-sm">View All →</Link>
           </div>
-           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 ">
+             <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-3 overflow-hidden">
             {popularProducts.slice(0, 6).map((product) => (
                 <ProductCard key={product.id} product={product} />
             ))}
@@ -100,9 +100,9 @@ export default function HomePage() {
       <section className="py-10 bg-white dark:bg-gray-800 border-y border-gray-100 dark:border-gray-700">
         <div className="mx-auto max-w-[1400px] px-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Shop by Brand</h2>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 ">
             {['Apple', 'Samsung', 'Dell', 'HP', 'Lenovo', 'Asus'].map((brand) => (
-              <Link key={brand} href="/products" className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded p-5 text-center hover:bg-white dark:hover:bg-gray-800 hover:border-blue-500 hover:shadow-md transition-all group">
+              <Link key={brand} href="/products" className="bg-gray-50 dark:bg-gray-900 border overflow-hidden border-gray-200 dark:border-gray-700 rounded p-5 text-center hover:bg-white dark:hover:bg-gray-800 hover:border-blue-500 hover:shadow-md transition-all group">
                 <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">{brand}</span>
               </Link>
             ))}
@@ -117,7 +117,7 @@ export default function HomePage() {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Trending Now</h2>
             <Link href="/products" className="text-blue-600 hover:text-blue-700 font-semibold text-sm">View All →</Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 ">
+             <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-3 ">
             {popularProducts.slice(0, 6).map((product) => (
                 <ProductCard key={product.id} product={product} />
             ))}
@@ -140,7 +140,7 @@ export default function HomePage() {
               <span>Ends in 12h 30m</span>
             </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 ">
+            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-3 ">
             {popularProducts.slice(0, 6).map((product) => (
                 <ProductCard key={product.id} product={product} />
             ))}
@@ -155,7 +155,7 @@ export default function HomePage() {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">New Arrivals</h2>
             <Link href="/products" className="text-blue-600 hover:text-blue-700 font-semibold text-sm">View All →</Link>
           </div>
-         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 ">
+            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-3 ">
             {popularProducts.slice(0, 6).map((product) => (
                 <ProductCard key={product.id} product={product} />
             ))}

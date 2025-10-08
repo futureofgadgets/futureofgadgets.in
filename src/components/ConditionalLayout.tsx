@@ -15,7 +15,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />
-      <div className="pt-25 sm:pt-14">
+      <div className="pt-23 md:pt-14">
         {children}
       </div>
     </>
