@@ -497,12 +497,13 @@ export default function ProductTable() {
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
                 />
-                <Button
+                <LoadingButton
                   onClick={handleAddCategory}
                   disabled={!newCategory.trim()}
+                  loading={categoryLoading}
                 >
                   Add
-                </Button>
+                </LoadingButton>
               </div>
               <div className="space-y-2 max-h-60 overflow-y-auto">
                 {categories.sort().map((category) => (
