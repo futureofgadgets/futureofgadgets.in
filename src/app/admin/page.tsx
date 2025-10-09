@@ -90,7 +90,7 @@ export default function AdminDashboardPage() {
   if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header Skeleton */}
           <div className="mb-8">
             <div className="h-10 bg-gray-200 rounded-lg w-48 mb-2 animate-pulse"></div>
@@ -185,7 +185,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+      <div className="w-full mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">Dashboard</h1>

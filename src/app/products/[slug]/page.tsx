@@ -190,7 +190,7 @@ export default function ProductPage() {
   return (
     <>
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="w-full mx-auto px-4 py-6">
         {/* Breadcrumb */}
         <div className="bg-white rounded-lg px-4 py-3 mb-6 shadow-sm ">
           <div className="text-sm text-gray-600 flex items-center flex-wrap">

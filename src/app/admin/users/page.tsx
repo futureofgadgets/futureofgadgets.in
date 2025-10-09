@@ -168,7 +168,7 @@ export default function AdminUsersPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen py-4 sm:py-10">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full mx-auto">
         {/* Page Header */}
         <div className="mb-6 flex flex-col gap-4 px-4 sm:px-6">
           <div>
