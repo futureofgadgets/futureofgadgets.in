@@ -144,7 +144,7 @@ export default function CheckoutPage() {
             {/* Content */}
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Your Cart is Empty</h1>
             <p className="text-lg text-gray-600 mb-8 max-w-md mx-auto">
-              Looks like you haven't added any items to your cart yet. Start shopping to find amazing products!
+              Looks like you haven&apos;t added any items to your cart yet. Start shopping to find amazing products!
             </p>
 
             {/* Action Buttons */}
