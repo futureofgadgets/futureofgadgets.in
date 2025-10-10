@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Settings, Home, Info, Mail, Save, Image, Tag, Star, Zap, Gift, Edit } from 'lucide-react'
+import { Settings, Home, Info, Mail, Save, Image, Tag, Star, Zap, Gift, Edit, Cross, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
@@ -133,32 +133,33 @@ export default function SettingsPage() {
   ]
 
   return (
-    <div className="flex flex-col h-full">
-      <header className="bg-white px-6 py-6 border-b">
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-          <Settings className="h-8 w-8 text-blue-600" />
+    <div className="flex flex-col h-full bg-gray-50">
+      <header className="bg-white px-4 sm:px-6 py-4 sm:py-6 border-b shadow-sm">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2 sm:gap-3">
+          <Settings className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
           Settings
         </h1>
-        <p className="text-gray-600 mt-2">Manage your store settings and content</p>
+        <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">Manage your store settings and content</p>
       </header>
 
-      <div className="flex text-sm overflow-x-auto gap-8 px-6 py-4 border-b">
+      <div className="flex text-xs sm:text-sm overflow-x-auto gap-4 sm:gap-8 px-4 sm:px-6 py-3 sm:py-4 border-b bg-white">
         {sections.map((section) => (
           <button
             key={section.id}
             onClick={() => setActiveSection(section.id)}
-            className={`pb-0 font-medium border-b-2 transition whitespace-nowrap ${
+            className={`pb-2 font-medium border-b-2 transition whitespace-nowrap flex items-center gap-1.5 ${
               activeSection === section.id
                 ? 'border-blue-600 text-blue-700'
-                : 'border-transparent text-gray-400 hover:text-gray-600 cursor-pointer'
+                : 'border-transparent text-gray-500 hover:text-gray-700 cursor-pointer'
             }`}
           >
+            <section.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             {section.name}
           </button>
         ))}
       </div>
 
-      <div className="flex-1 p-6 overflow-auto">
+      <div className="flex-1 p-4 sm:p-6 overflow-auto">
         {activeSection === 'all' ? (
           <div className="space-y-8">
             {renderSection('home')}
@@ -188,10 +189,10 @@ export default function SettingsPage() {
     switch(id) {
       case 'home':
         return (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <Home className="h-6 w-6 text-blue-600" />
-              <h2 className="text-xl font-semibold text-gray-900">Home Page Sections</h2>
+          <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <Home className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Home Page Sections</h2>
             </div>
           
           <div className="space-y-4">
@@ -226,12 +227,12 @@ export default function SettingsPage() {
         )
       case 'slider':
         return (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <Image className="h-6 w-6 text-indigo-600" />
-              <h2 className="text-xl font-semibold text-gray-900">Home Slider Settings</h2>
-              <span>(Atleast 3 Slider is Always show)</span>
+          <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+          <div className="flex flex-wrap gap-2 items-center justify-between mb-4 sm:mb-6">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <Image className="h-5 w-5 sm:h-6 sm:w-6 text-indigo-600" />
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Home Slider Settings</h2>
+              <span className="text-xs sm:text-sm text-gray-500">(Min 3 sliders)</span>
             </div>
             <Button
               onClick={() => {
@@ -246,17 +247,18 @@ export default function SettingsPage() {
                 }
                 setSliderSettings([...sliderSettings, newSlide])
               }}
-              className="flex items-center gap-2"
+              size="sm"
+              className="flex items-center gap-1.5 text-xs sm:text-sm"
             >
-              <Gift className="h-4 w-4" />
+              <Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Add Slider
             </Button>
           </div>
           
           {sliderSettings.map((slide, index) => (
-            <div key={slide.id} className="mb-6 p-4 border rounded-lg">
+            <div key={slide.id} className="mb-4 sm:mb-6 p-3 sm:p-4 border rounded-lg bg-gray-50">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">Slide {index + 1}</h3>
+                <h3 className="text-sm sm:text-base font-semibold text-gray-700">Slide {index + 1}</h3>
                 {sliderSettings.length > 3 ? (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -386,7 +388,7 @@ export default function SettingsPage() {
                           setSliderSettings(updated)
                         }}
                       >
-                        Remove
+                        <X className='w-5 h-5'/>
                       </Button>
                     )}
                   </div>
@@ -416,10 +418,10 @@ export default function SettingsPage() {
         )
       case 'deals':
         return (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <Tag className="h-6 w-6 text-red-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Today&apos;s Deals Settings</h2>
+          <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <Tag className="h-5 w-5 sm:h-6 sm:w-6 text-red-600" />
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Today&apos;s Deals Settings</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -445,10 +447,10 @@ export default function SettingsPage() {
         )
       case 'flash':
         return (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <Zap className="h-6 w-6 text-yellow-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Flash Sale Settings</h2>
+          <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-600" />
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Flash Sale Settings</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -470,10 +472,10 @@ export default function SettingsPage() {
         )
       case 'testimonials':
         return (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <Star className="h-6 w-6 text-amber-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Customer Testimonials</h2>
+          <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <Star className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600" />
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Customer Testimonials</h2>
           </div>
           
           <div className="space-y-4">
@@ -495,10 +497,10 @@ export default function SettingsPage() {
         )
       case 'contact':
         return (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <Mail className="h-6 w-6 text-purple-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Contact Page Settings</h2>
+          <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <Mail className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600" />
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Contact Page Settings</h2>
           </div>
           
           <div className="space-y-4">

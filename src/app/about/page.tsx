@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Target, Shield, Truck, Users, Award, Globe } from 'lucide-react';
+import { Target, Shield, Truck, Users, Award, MapPin } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -9,12 +9,12 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 py-12">
+      <div className="max-w-6xl mx-auto px-4 pt-20 md:pt-12">
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-900 mb-6">About Electronic Web</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Your trusted destination for quality electronics and cutting-edge technology. 
+            Your trusted destination for quality electronics and cutting-edge technology in India. 
             We&apos;re committed to making the latest innovations accessible to everyone.
           </p>
         </div>
@@ -30,7 +30,7 @@ export default function AboutPage() {
             <div className="text-gray-600">Products</div>
           </div>
           <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-            <div className="text-3xl font-bold text-purple-600 mb-2">5</div>
+            <div className="text-3xl font-bold text-purple-600 mb-2">{new Date().getFullYear() - 2019}</div>
             <div className="text-gray-600">Years Experience</div>
           </div>
           <div className="bg-white rounded-lg shadow-sm p-6 text-center">
@@ -45,9 +45,9 @@ export default function AboutPage() {
             <div>
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
-                Founded in 2019 with a simple vision: to make cutting-edge technology accessible 
-                to everyone. What started as a small electronics store has grown into a trusted 
-                online destination for tech enthusiasts worldwide.
+                Founded in {new Date().getFullYear() - (new Date().getFullYear() - 2019)} with a simple vision: to make cutting-edge technology accessible 
+                to everyone in India. What started as a small electronics store has grown into a trusted 
+                online destination for tech enthusiasts across the country.
               </p>
               <p className="text-gray-600 leading-relaxed mb-4">
                 We carefully curate our product selection, partnering with leading brands to 
@@ -55,15 +55,15 @@ export default function AboutPage() {
                 our high standards before it reaches your doorstep.
               </p>
               <p className="text-gray-600 leading-relaxed">
-                Today, we&apos;re proud to serve thousands of customers globally, offering everything 
+                Today, we&apos;re proud to serve thousands of customers across India, offering everything 
                 from laptops and smartphones to smart home devices and gaming accessories.
               </p>
             </div>
             <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-8">
               <div className="text-center">
-                <Globe className="w-16 h-16 text-blue-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Global Reach</h3>
-                <p className="text-gray-600">Serving customers in over 50 countries worldwide</p>
+                <MapPin className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Pan-India Delivery</h3>
+                <p className="text-gray-600">Serving customers across all major cities in India</p>
               </div>
             </div>
           </div>
@@ -79,7 +79,7 @@ export default function AboutPage() {
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Our Mission</h3>
               <p className="text-gray-600 leading-relaxed">
-                To democratize technology by providing cutting-edge electronics with unmatched 
+                To democratize technology across India by providing cutting-edge electronics with unmatched 
                 quality, competitive pricing, and exceptional customer service.
               </p>
             </div>
@@ -151,18 +151,18 @@ export default function AboutPage() {
             <div className="bg-white rounded-lg p-6">
               <div className="flex items-center mb-4">
                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-2xl">🌍</span>
+                  <span className="text-2xl">🇮🇳</span>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900">Global Impact</h3>
+                <h3 className="text-xl font-semibold text-gray-900">Local Impact</h3>
               </div>
               <p className="text-gray-600">
-                Supporting environmental initiatives and clean technology development worldwide.
+                Supporting environmental initiatives and clean technology development across India.
               </p>
             </div>
           </div>
           
           <div className="text-center bg-white rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Our Green Goals for 2025</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Our Green Goals for {new Date().getFullYear()}</h3>
             <div className="grid md:grid-cols-3 gap-4 mt-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">50%</div>
