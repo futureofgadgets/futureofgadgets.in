@@ -88,8 +88,8 @@ export default function CategoryPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-full mx-auto py-10 sm:pt-20 md:py-8">
+    <div className="min-h-screen bg-white ">
+      <div className="max-w-full mx-auto pt-10  md:py-8">
         <div className="flex gap-0">
           {/* Sidebar */}
           <div className="hidden md:block">
@@ -107,7 +107,7 @@ export default function CategoryPage() {
             {selectedCategory ? (
               <div>
                 {/* Category Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4 xl:px-4 px-4">
+                <div className="flex sm:items-center justify-between mb-2 gap-4 xl:px-4 px-4">
                   <div>
                     <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                       {categories.find((c) => c.slug === selectedCategory)?.name}
@@ -117,6 +117,20 @@ export default function CategoryPage() {
                       {categories.find((c) => c.slug === selectedCategory)?.description}
                     </p> */}
                   </div>
+
+                  <div className="flex items-center gap-2">
+
+
+
+                  <div className="md:block">
+            <CategoryBar
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onCategorySelect={handleCategorySelect}
+              isSidebarOpen={isSidebarOpen}
+              onSidebarToggle={setIsSidebarOpen}
+            />
+          </div>
 
                   {/* Sort Button */}
                   <DropdownMenu>
@@ -142,6 +156,7 @@ export default function CategoryPage() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
+                                  </div>
 
                 {/* Products Grid */}
                 {loading ? (
@@ -172,9 +187,9 @@ export default function CategoryPage() {
                   <div className="space-y-4">
                     {sortedProducts.map((product) => (
                       <Link key={product.id} href={`/products/${product.slug || product.id}`}>
-                        <div className="bg-white p-4 border-y border-gray-200 hover:shadow-md transition-shadow cursor-pointer">
+                        <div className={`bg-white p-4 border-y border-gray-200 hover:shadow-md transition-shadow cursor-pointer ${product.quantity === 0 ? 'opacity-60' : ''}`}>
                           <div className="flex gap-4">
-                            <div className="w-48 h-44 flex-shrink-0">
+                            <div className="w-48 h-44 flex-shrink-0 relative">
                               <CloudinaryImage
                                 src={product.frontImage || product.image || '/no-image.svg'}
                                 alt={product.name}
@@ -182,40 +197,52 @@ export default function CategoryPage() {
                                 height={200}
                                 className="w-full h-full object-cover"
                               />
+                              {product.quantity === 0 && (
+                                <div className="absolute inset-0 bg-gray-400/40 flex items-center justify-center">
+                                  <span className="bg-gray-600 text-white px-3 py-1 font-bold text-sm rounded">OUT OF STOCK</span>
+                                </div>
+                              )}
                             </div>
                             <div className="flex-1">
                               <h3 className="text-lg font-medium text-blue-600 mb-2 hover:underline">
                                 {product.name}
                               </h3>
-                              <div className="flex items-center gap-2 mb-2">
-                                <div className="bg-green-600 text-white px-2 py-1 rounded text-sm flex items-center gap-1">
-                                  <span>4.3</span>
-                                  <Star className="w-3 h-3 fill-current" />
+                              {product.rating && (
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className="bg-green-600 text-white px-2 py-1 rounded text-sm flex items-center gap-1">
+                                    <span>{product.rating}</span>
+                                    <Star className="w-3 h-3 fill-current" />
+                                  </div>
                                 </div>
-                                <span className="text-gray-600 text-sm">27,371 Ratings & 2,100 Reviews</span>
-                              </div>
-                              <ul className="text-sm text-gray-700 space-y-1 mb-3">
-                                <li>• High-performance specifications</li>
-                                <li>• Premium build quality</li>
-                                <li>• Advanced features</li>
-                                <li>• 1 Year Warranty</li>
-                              </ul>
+                              )}
+                              {product.brand && (
+                                <p className="text-sm text-gray-600 mb-2">Brand: <span className="font-medium">{product.brand}</span></p>
+                              )}
+                              <p className="text-sm text-gray-700 line-clamp-3 mb-3">
+                                {product.description || 'High-quality product with premium features'}
+                              </p>
+                              {product.quantity === 0 ? (
+                                <span className="text-xs text-red-600 font-semibold">Out of Stock</span>
+                              ) : product.quantity <= 5 ? (
+                                <span className="text-xs text-orange-600 font-semibold">Only {product.quantity} left</span>
+                              ) : (
+                                <span className="text-xs text-green-600 font-semibold">In Stock</span>
+                              )}
                             </div>
                             <div className="text-left mt-5">
                               <div className="text-2xl font-bold text-gray-900 mb-1">
                                 ₹{product.price?.toLocaleString()}
                               </div>
-                              <div className="flex gap-1">
-                              <div className="text-sm text-gray-500 line-through font-medium mb-1">
-                                ₹{Math.round((product.price || 0) * 1.3).toLocaleString()}
-                              </div>
-                              <div className="text-sm text-green-600 font-medium mb-2">
-                                27% off
-                              </div>
-                              </div>
-                              <div className="text-xs text-blue-600 bg-blue-100 font-medium p-1 rounded">
-                                Top Discount of the Sale
-                              </div>
+                              {product.mrp && product.mrp > product.price && (
+                                <div className="flex gap-1">
+                                  <div className="text-sm text-gray-500 line-through font-medium mb-1">
+                                    ₹{product.mrp.toLocaleString()}
+                                  </div>
+                                  <div className="text-sm text-green-600 font-medium mb-2">
+                                    {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% off
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>

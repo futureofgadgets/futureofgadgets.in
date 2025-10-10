@@ -15,6 +15,7 @@ type Product = {
   coverImage: string;
   images: string[];
   price: number;
+  mrp?: number;
   quantity: number;
 };
 
@@ -97,6 +98,7 @@ export default function ProductsPage() {
             coverImage: p.frontImage,
             images: p.images || [p.frontImage],
             price: p.price,
+            mrp: p.mrp,
             quantity: Math.max(0, (p.quantity || p.stock) - cartQty)
           };
         });

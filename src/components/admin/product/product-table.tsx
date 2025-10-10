@@ -65,6 +65,7 @@ type Item = {
   image: string;
   images: string[];
   price: number;
+  mrp?: number;
   quantity: number;
   brand?: string;
   sku?: string;
@@ -83,6 +84,8 @@ const itemSchema = z.object({
   category: z.string().min(1, "Category is required"),
   description: z.string().min(1, "Description is required"),
   price: z.number().min(0, "Price is required"),
+  mrp: z.number().min(0).optional(),
+  discount: z.number().min(0).optional(),
   quantity: z.number().min(0, "Quantity is required"),
   brand: z.string().optional(),
   screenSize: z.string().optional(),
@@ -122,6 +125,8 @@ export default function ProductTable() {
     category: "",
     description: "",
     price: 0,
+    mrp: 0,
+    discount: 0,
     quantity: 0,
     brand: "",
     screenSize: "",
@@ -155,6 +160,7 @@ export default function ProductTable() {
               ? p.images
               : p.images?.split?.(",").map((s: string) => s.trim()) ?? [],
             price: Number(p.price ?? 0),
+            mrp: Number(p.mrp ?? 0),
             quantity: Number(p.quantity ?? p.stock ?? 0),
             brand: p.brand ?? "",
             sku: p.sku ?? `SKU-${Date.now()}`,
@@ -208,11 +214,16 @@ export default function ProductTable() {
 
   const handleEditClick = (item: Item) => {
     setEditId(item.id);
+    const mrp = item.mrp || item.price || 0;
+    const price = item.price || 0;
+    const discount = mrp > 0 && price > 0 ? Math.round(((mrp - price) / mrp) * 100) : 0;
     form.reset({
       name: item.name,
       category: item.category,
       description: item.description,
-      price: item.price,
+      price: price,
+      mrp: mrp,
+      discount: discount,
       quantity: item.quantity,
       brand: item.brand || "",
       screenSize: item.screenSize || "",
@@ -344,6 +355,11 @@ export default function ProductTable() {
       return;
     }
 
+    if (values.mrp && values.price > values.mrp) {
+      toast.error("Selling price cannot be greater than MRP");
+      return;
+    }
+
     setUploading(true);
     try {
       let frontImageUrl = currentFrontImage;
@@ -377,6 +393,7 @@ export default function ProductTable() {
         frontImage: frontImageUrl,
         images: additionalImageUrls,
         price: values.price,
+        mrp: values.mrp || values.price,
         quantity: values.quantity,
         brand: values.brand,
 
@@ -420,6 +437,7 @@ export default function ProductTable() {
         image: frontImageUrl,
         images: additionalImageUrls,
         price: values.price,
+        mrp: values.mrp || values.price,
         quantity: values.quantity,
         brand: values.brand || "",
         sku: editId
@@ -628,22 +646,20 @@ export default function ProductTable() {
                         )}
                       />
 
-                      {/* Price + Quantity */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* MRP, Discount, Selling Price */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <FormField
                           control={form.control}
-                          name="price"
+                          name="mrp"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Price (INR)</FormLabel>
+                              <FormLabel>MRP (INR)</FormLabel>
                               <FormControl>
                                 <Input
                                   type="number"
-                                  placeholder="e.g. 1299"
+                                  placeholder="e.g. 109999"
                                   value={field.value === 0 ? "" : field.value}
-                                  onChange={(e) =>
-                                    field.onChange(Number(e.target.value) || 0)
-                                  }
+                                  onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -652,18 +668,34 @@ export default function ProductTable() {
                         />
                         <FormField
                           control={form.control}
-                          name="quantity"
+                          name="discount"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Quantity</FormLabel>
+                              <FormLabel>Discount %</FormLabel>
                               <FormControl>
                                 <Input
                                   type="number"
-                                  placeholder="e.g. 10"
+                                  placeholder="e.g. 18"
                                   value={field.value === 0 ? "" : field.value}
-                                  onChange={(e) =>
-                                    field.onChange(Number(e.target.value) || 0)
-                                  }
+                                  onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="price"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Selling Price (INR)</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder="e.g. 89999"
+                                  value={field.value === 0 ? "" : field.value}
+                                  onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -671,6 +703,28 @@ export default function ProductTable() {
                           )}
                         />
                       </div>
+
+                      {/* Quantity */}
+                      <FormField
+                        control={form.control}
+                        name="quantity"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Quantity</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                placeholder="e.g. 10"
+                                value={field.value === 0 ? "" : field.value}
+                                onChange={(e) =>
+                                  field.onChange(Number(e.target.value) || 0)
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
                       {/* Description */}
                       <FormField

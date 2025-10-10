@@ -15,6 +15,7 @@ type Product = {
   frontImage?: string;
   image?: string;
   price: number;
+  mrp?: number;
   quantity?: number;
   stock?: number;
 };
@@ -29,6 +30,9 @@ export default function ProductCardWithShare({ product, onAddToCart, onBuyNow }:
   const [shareProduct, setShareProduct] = useState<Product | null>(null);
   const imageUrl = product.coverImage || product.frontImage || product.image || "/placeholder.svg";
   const currentQty = product.quantity !== undefined ? product.quantity : (product.stock || 0);
+  const mrp = Number(product.mrp) || 0;
+  const price = Number(product.price) || 0;
+  const discountPct = mrp > 0 && mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0;
 
   const handleCopyLink = () => {
     const url = `${window.location.origin}/products/${shareProduct?.slug}`;
@@ -59,14 +63,19 @@ export default function ProductCardWithShare({ product, onAddToCart, onBuyNow }:
 
   return (
     <>
-      <div className="bg-white rounded-sm transition-shadow duration-200 flex flex-col">
+      <div className="bg-white rounded-sm transition-shadow duration-200 flex flex-col relative">
         <Link href={`/products/${product.slug}`} className="block">
+          {discountPct > 0 && (
+            <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold z-10">
+              {discountPct}% OFF
+            </div>
+          )}
           <div className="relative aspect-[4/3] bg-gradient-to-br from-gray-50 to-gray-100 p-8">
             <Image
               src={imageUrl}
               alt={product.name}
               fill
-              className="object-contain p-2"
+              className="object-contain p-2 bg-white"
               onError={(e) => {
                 e.currentTarget.src = '/placeholder.svg';
               }}
@@ -99,18 +108,28 @@ export default function ProductCardWithShare({ product, onAddToCart, onBuyNow }:
             </button>
           </div>
           <Link href={`/products/${product.slug}`} className="flex-1">
-            <p className="text-xs text-gray-500 line-clamp-2 mb-3">
+            <p className="text-xs text-gray-500 line-clamp-2 mb-2">
               {product.description || 'High-quality product with premium features'}
             </p>
           </Link>
           
           <div className="mb-3">
-            <div className="flex items-baseline gap-2">
+            <div className="flex items-baseline gap-2 mb-1">
               <span className="text-2xl font-bold text-gray-900">
-                ₹{product.price.toLocaleString()}
+                ₹{price.toLocaleString()}
               </span>
+              {mrp > 0 && mrp > price && (
+                <>
+                  <span className="text-sm text-gray-400 line-through">
+                    ₹{mrp.toLocaleString()}
+                  </span>
+                  <span className="text-sm text-green-600 font-semibold">
+                    {discountPct}% off
+                  </span>
+                </>
+              )}
             </div>
-            <div className="flex items-center gap-1 mt-1">
+            <div className="flex items-center gap-1">
               <span className="text-xs text-green-600 font-medium">★★★★☆</span>
               <span className="text-xs text-gray-500">(4.2)</span>
             </div>

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function AdminProductsPage() {
   return (
     <main className="mx-auto">
-      <header className="mb-6 max-w-6xl px-4 py-8">
+      <header className="max-w-6xl px-4 py-8">
         <h1 className="text-2xl font-semibold text-foreground">Products</h1>
         <p className="text-sm text-muted-foreground leading-relaxed">
           View inventory, prices, and statuses. This section is hidden from search engines.

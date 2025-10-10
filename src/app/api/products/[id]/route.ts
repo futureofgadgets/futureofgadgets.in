@@ -15,6 +15,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         frontImage: data.frontImage || '',
         images: data.images || [],
         price: Number(data.price),
+        mrp: Number(data.mrp) || Number(data.price),
         stock: Number(data.quantity) || Number(data.stock) || 0,
         quantity: Number(data.quantity) || Number(data.stock) || 0,
         brand: data.brand || '',

@@ -38,6 +38,7 @@ export async function POST(req: Request) {
         frontImage: data.frontImage || '',
         images: Array.isArray(data.images) ? data.images : [],
         price: Number(data.price),
+        mrp: Number(data.mrp) || Number(data.price),
         stock: Number(data.quantity) || 0,
         quantity: Number(data.quantity) || 0,
         brand: data.brand || '',
