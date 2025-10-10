@@ -121,15 +121,21 @@ export function Navbar() {
             aria-label="Go to homepage"
           >
             <div className="flex items-center gap-2">
-              {/* <img
-                src="/logo.png"
-                alt="Store logo"
-                className="h-10 rounded-full object-contain"
-              /> */}
-              <span className="!text-2xl md:text-base font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent" style={{ 
-              fontFamily: "'Great Vibes', cursive"}}> 
-                Future of  Gadgets
-              </span>
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+                <img
+              src="/logo.png"
+              alt="Store logo"
+              className="h-8 sm:h-10 w-full rounded bg-transparent"
+            />
+              </div>
+                <div className="hidden sm:flex flex-col leading-tight ">
+                <span className="text-lg md:text-xl font-bold text-indigo-600">
+                  ElectroHub
+                </span>
+                <span className="text-[9px] md:text-[10px] font-medium  -mt-0.5 bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent">
+                  Future of Gadgets
+                </span>
+              </div>
             </div>
           </Link>
 
