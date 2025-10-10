@@ -206,7 +206,7 @@ export default function CheckoutPage() {
                   <Package className="w-6 h-6 text-green-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-1">Free Shipping</h3>
-                <p className="text-sm text-gray-600">On all orders above ₹500</p>
+                <p className="text-sm text-gray-600">On all orders above ₹1000</p>
               </div>
               <div className="flex flex-col items-center text-center">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
@@ -220,7 +220,7 @@ export default function CheckoutPage() {
                   <ArrowRight className="w-6 h-6 text-purple-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-1">Easy Returns</h3>
-                <p className="text-sm text-gray-600">30-day return policy</p>
+                <p className="text-sm text-gray-600">7-day return policy</p>
               </div>
             </div>
           </div>
