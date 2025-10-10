@@ -117,15 +117,20 @@ export function Navbar() {
         <div className="flex items-center gap-1 md:gap-6">
           <Link
             href="/"
-            className="flex items-center gap-2 w-10 h-10"
+            className="flex items-center gap-2"
             aria-label="Go to homepage"
           >
-            <img
-              src="/logo.png"
-              alt="Store logo"
-              className="h-10 w-full rounded bg-transparent"
-            />
-            {/* <span className="font-semibold text-foreground">Electronic</span> */}
+            <div className="flex items-center gap-2">
+              {/* <img
+                src="/logo.png"
+                alt="Store logo"
+                className="h-10 rounded-full object-contain"
+              /> */}
+              <span className="!text-2xl md:text-base font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent" style={{ 
+              fontFamily: "'Great Vibes', cursive"}}> 
+                Future of  Gadgets
+              </span>
+            </div>
           </Link>
 
           {/* Mobile Categories Dropdown */}
@@ -878,7 +883,7 @@ export function Navbar() {
                   </div>
                 </>
               ) : (
-                <div className="p-4">
+                <div className="pt-4 pb-2 px-2">
                   <div className="text-center mb-4">
                     <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mx-auto mb-3">
                       <User className="h-8 w-8 text-white" />
