@@ -1,9 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { popularProducts } from "@/lib/data/popular-products";
 import HeaderSlider from "@/components/home/HomeSlider";
-import ProductCard from "@/components/product-card";
 import { Footer } from "@/components/Footer";
 import ShopByBrands from "@/components/home/ShopByBrands";
 import PopularCategories from "@/components/home/PopularCategories";
@@ -17,22 +14,24 @@ import FeaturedSection from "@/components/home/FeaturedSection";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gray-50/5 dark:bg-gray-900">
+     <main className="min-h-screen bg-gray-50/5 dark:bg-gray-900">
       {/* Hero Slider */}
       <section className="bg-white dark:bg-gray-800">
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+        <div className="mx-auto max-w-[1400px] sm:px-6">
           <HeaderSlider />
         </div>
       </section>
-      <FeaturedProducts />
-      <PopularCategories />
-      <PromotionalBanner />
-      <BestSeller />
-      <ShopByBrands />
-      <TrendingNow />
-      <DealoftheDay />
-      <NewArrivals />
-      <FeaturedSection/>
+      <div className="space-y-4 sm:space-y-8">
+        <NewArrivals />
+        <DealoftheDay />
+        <FeaturedProducts />
+        <PopularCategories />
+        <PromotionalBanner />
+        <BestSeller />
+        <ShopByBrands />
+        <TrendingNow />
+        <FeaturedSection/>
+      </div>
       <Footer />
     </main>
   );
