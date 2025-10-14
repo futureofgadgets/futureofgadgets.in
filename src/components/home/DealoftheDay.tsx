@@ -5,6 +5,7 @@ import { popularProducts } from "@/lib/data/popular-products";
 import { toast } from 'sonner'
 import { addToCart } from '@/lib/cart'
 import { useRouter } from 'next/navigation'
+import { Clock } from 'lucide-react';
 
 export default function DealoftheDay(){
   const router = useRouter()
@@ -61,9 +62,7 @@ export default function DealoftheDay(){
             <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-0.5 sm:mt-1">Limited time offers</p>
           </div>
           <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm font-medium text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full">
-            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 018 0z" />
-            </svg>
+           <Clock className='h-3 w-3 sm:h-4 sm:w-4' />
             <span className="hidden sm:inline">Ends in 12:00</span>
             <span className="sm:hidden">12:00</span>
           </div>

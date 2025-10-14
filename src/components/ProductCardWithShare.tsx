@@ -72,7 +72,7 @@ export default function ProductCardWithShare({ product, onAddToCart, onBuyNow }:
 
   return (
     <>
-      <div className="bg-white rounded-sm transition-shadow duration-200 flex flex-col relative">
+      <div className="bg-white sm:rounded-sm transition-shadow duration-200 flex flex-col relative border sm:border-none overflow-hidden">
         {discountPct > 0 && (
           <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold z-10">
             {discountPct}% OFF
@@ -87,7 +87,8 @@ export default function ProductCardWithShare({ product, onAddToCart, onBuyNow }:
               slug: product.slug,
               name: product.name,
               price: product.price,
-              image: imageUrl
+              image: imageUrl,
+              description: product.description || 'High-quality product with premium features'
             });
             setIsWishlisted(added);
             toast.success(added ? 'Added to wishlist' : 'Removed from wishlist');
@@ -148,19 +149,19 @@ export default function ProductCardWithShare({ product, onAddToCart, onBuyNow }:
           </Link>
           
           <div className="mb-3">
-            <div className="flex items-baseline gap-2 mb-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 items-baseline sm:gap-2 sm:mb-1">
               <span className="text-2xl font-bold text-gray-900">
                 ₹{price.toLocaleString()}
               </span>
               {mrp > 0 && mrp > price && (
-                <>
+                 <span className="space-x-2">
                   <span className="text-sm text-gray-400 line-through">
                     ₹{mrp.toLocaleString()}
                   </span>
                   <span className="text-sm text-green-600 font-semibold">
                     {discountPct}% off
                   </span>
-                </>
+                </span>
               )}
             </div>
             <div className="flex items-center gap-1">
@@ -169,18 +170,18 @@ export default function ProductCardWithShare({ product, onAddToCart, onBuyNow }:
             </div>
           </div>
           
-          <div className="flex gap-2">
+          <div className="flex flex-col-reverse sm:flex-row gap-2">
             <button
               onClick={(e) => onAddToCart(e, product)}
               disabled={currentQty === 0}
-              className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md"
+              className="flex-1 bg-yellow-400 hover:bg-yellow-500 rounded-md text-gray-900 font-bold py-2 text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md"
             >
               ADD TO CART
             </button>
             <button
               onClick={(e) => onBuyNow(e, product)}
               disabled={currentQty === 0}
-              className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md"
+              className="flex-1 bg-orange-500 hover:bg-orange-600 rounded-md text-white font-bold py-2 text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md"
             >
               BUY NOW
             </button>

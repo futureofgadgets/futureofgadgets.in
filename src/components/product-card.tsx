@@ -89,6 +89,7 @@ export default function ProductCard({ product, onAddToCart, onBuyNow }: ProductC
                 name: product.name,
                 price: product.price,
                 image: imageUrl,
+                description: product.description || 'High-quality product with premium features',
               });
               toast.success(added ? 'Added to wishlist' : 'Removed from wishlist');
             }}
@@ -119,7 +120,7 @@ export default function ProductCard({ product, onAddToCart, onBuyNow }: ProductC
         </Link>
         
         <div className="p-4 flex-1 flex flex-col">
-          <div className="flex justify-between items-start mb-2">
+          <div className="flex justify-between items-start sm:mb-2">
             <Link href={`/products/${product.slug}`} className="flex-1">
               <h3 className="text-base font-semibold text-gray-800 line-clamp-2 hover:text-blue-600 leading-snug">
                 {product.name}
@@ -138,13 +139,13 @@ export default function ProductCard({ product, onAddToCart, onBuyNow }: ProductC
             </button>
           </div>
           <Link href={`/products/${product.slug}`} className="flex-1">
-            <p className="text-xs text-gray-500 line-clamp-2 mb-2">
+            <p className="text-xs sm:text-sm text-gray-500 line-clamp-2 mb-2">
               {product.description || 'High-quality product with premium features'}
             </p>
           </Link>
           
           <div className="mb-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 items-baseline gap-2 mb-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 items-baseline sm:gap-2 sm:mb-1">
               <span className="text-2xl font-bold text-gray-900">
                 ₹{price.toLocaleString()}
               </span>

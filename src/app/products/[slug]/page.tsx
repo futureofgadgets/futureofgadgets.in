@@ -267,7 +267,8 @@ export default function ProductPage() {
                     slug: product.slug,
                     name: product.name,
                     price: product.price,
-                    image: product.frontImage || product.image || product.coverImage || "/no-image.svg"
+                    image: product.frontImage || product.image || product.coverImage || "/no-image.svg",
+                    description: product.description
                   });
                   setIsWishlisted(added);
                   toast.success(added ? 'Added to wishlist' : 'Removed from wishlist');

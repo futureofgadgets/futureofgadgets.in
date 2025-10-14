@@ -109,7 +109,7 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">  
+      <div className="max-w-7xl mx-auto px-0 sm:px-6 lg:px-8 sm:py-8 pb-2 mt-5">  
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -118,7 +118,7 @@ export default function ProductsPage() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 sm:gap-5">
             {products.map((product) => (
               <ProductCardWithShare
                 key={product.id}

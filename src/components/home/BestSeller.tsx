@@ -59,9 +59,9 @@ export default function BestSeller(){
         <div className="flex items-center justify-between mb-4 sm:mb-6 px-3 sm:px-0">
           <div>
             <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Best Sellers</h2>
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-0.5 sm:mt-1">Most popular products</p>
+            <p className="hidden sm:block sm:text-sm text-gray-600 dark:text-gray-400 mt-0.5 sm:mt-1">Most popular products</p>
           </div>
-          <Link href="/products" scroll={true} className="text-blue-600 hover:text-blue-700 font-semibold text-xs sm:text-sm whitespace-nowrap hover:underline">View All →</Link>
+           <Link href="/products" scroll={true} className="sm:px-4 sm:p-2 sm:bg-blue-100 rounded-full text-blue-600 hover:text-blue-700 font-semibold text-xs sm:text-sm whitespace-nowrap hover:underline">View All </Link>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-0 sm:gap-2">
           {loading ? (

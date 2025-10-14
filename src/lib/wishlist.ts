@@ -6,6 +6,7 @@ export type WishlistItem = {
   name: string
   price: number
   image: string
+  description: string
 }
 
 export function getWishlist(): WishlistItem[] {
