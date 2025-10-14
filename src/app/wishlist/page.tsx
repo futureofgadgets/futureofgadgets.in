@@ -86,10 +86,11 @@ export default function WishlistPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen mt-5 sm:mt-2 bg-white to-white p-4">
+      <div className='bg-gray-50'>
+      <div className="max-w-7xl mx-auto min-h-screen mt-5 sm:mt-2 p-4">
         <header className="mb-8 text-left">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">My Wishlist</h1>
-          <p className="text-gray-600 sm:mt-2">Save your favorite items for later</p>
+          <p className="text-gray-600 sm:mt-1">Save your favorite items for later</p>
         </header>
         <div className="max-w-2xl w-full text-center mx-auto">
           <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-6 sm:mb-8">
@@ -136,6 +137,7 @@ export default function WishlistPage() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     )
   }
