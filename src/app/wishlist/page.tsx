@@ -5,14 +5,26 @@ import { getWishlist, removeFromWishlist, type WishlistItem } from '@/lib/wishli
 import { addToCart } from '@/lib/cart'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Heart, ShoppingCart, Trash2, Sparkles, TrendingUp, Tag, Share2, Star, X, Copy } from 'lucide-react'
+import { Heart, ShoppingCart, Trash2, Sparkles, TrendingUp, Tag, Share2, Star, X, Copy, Trash } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 export default function WishlistPage() {
   const [items, setItems] = useState<WishlistItem[]>([])
   const [loading, setLoading] = useState(true)
   const [shareProduct, setShareProduct] = useState<WishlistItem | null>(null)
+  const [clearDialogOpen, setClearDialogOpen] = useState(false)
   const router = useRouter()
 
   const handleCopyLink = () => {
@@ -23,38 +35,38 @@ export default function WishlistPage() {
   }
 
   useEffect(() => {
-    const migrateWishlist = async () => {
+    const loadWishlist = async () => {
       const wishlist = getWishlist()
-      const needsMigration = wishlist.some(item => !item.description)
       
-      if (needsMigration) {
-        try {
-          const res = await fetch('/api/products')
-          const products = await res.json()
-          
-          const updated = wishlist.map(item => {
-            if (!item.description) {
-              const product = products.find((p: any) => p.id === item.id)
-              if (product) {
-                return { ...item, description: product.description || 'High-quality product with premium features' }
-              }
+      try {
+        const res = await fetch('/api/products')
+        const products = await res.json()
+        const cart = JSON.parse(localStorage.getItem('v0_cart') || '[]')
+        
+        const updated = wishlist.map(item => {
+          const product = products.find((p: any) => p.id === item.id)
+          if (product) {
+            const cartQty = cart.reduce((sum: number, cartItem: any) => 
+              cartItem.id === item.id ? sum + (cartItem.qty || 1) : sum, 0
+            )
+            return { 
+              ...item, 
+              description: item.description || product.description || 'High-quality product with premium features',
+              quantity: Math.max(0, (product.quantity || product.stock || 0) - cartQty)
             }
-            return item
-          })
-          
-          localStorage.setItem('wishlist', JSON.stringify(updated))
-          setItems(updated)
-        } catch (error) {
-          setItems(wishlist)
-        }
-      } else {
+          }
+          return item
+        })
+        
+        setItems(updated)
+      } catch (error) {
         setItems(wishlist)
       }
       setLoading(false)
     }
     
-    migrateWishlist()
-    const onUpdate = () => setItems(getWishlist())
+    loadWishlist()
+    const onUpdate = () => loadWishlist()
     window.addEventListener('wishlist-updated', onUpdate)
     return () => window.removeEventListener('wishlist-updated', onUpdate)
   }, [])
@@ -150,6 +162,36 @@ export default function WishlistPage() {
             <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-pink-500 fill-pink-500" />
             My Wishlist ({items.length})
           </h1>
+          <AlertDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen}>
+            <AlertDialogTrigger asChild>
+              <button className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md text-sm font-medium transition-colors">
+                <Trash className="w-4 h-4" />
+                <span className="hidden sm:inline">Clear All</span>
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Clear Wishlist?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will remove all {items.length} item{items.length !== 1 ? 's' : ''} from your wishlist. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    localStorage.removeItem('wishlist')
+                    setItems([])
+                    window.dispatchEvent(new Event('wishlist-updated'))
+                    toast.success('Wishlist cleared')
+                  }}
+                  className="bg-red-500 hover:bg-red-600"
+                >
+                  Clear All
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 sm:gap-2">
@@ -191,6 +233,11 @@ export default function WishlistPage() {
                         }}
                       />
                     </div>
+                    {(item as any).quantity === 0 && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <span className="bg-red-600 text-white px-4 py-2 font-bold text-sm">OUT OF STOCK</span>
+                      </div>
+                    )}
                   </div>
                 </Link>
                 
@@ -244,6 +291,10 @@ export default function WishlistPage() {
                   <div className="hidden sm:flex gap-2 ">
                     <button
                       onClick={() => {
+                        if ((item as any).quantity === 0) {
+                          toast.error('Out of Stock', { description: 'This product is currently unavailable.' })
+                          return
+                        }
                         addToCart({
                           id: item.id,
                           slug: item.slug,
@@ -253,12 +304,17 @@ export default function WishlistPage() {
                         })
                         toast.success('', { description: `${item.name} has been added to your cart.` })
                       }}
-                      className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-2 text-xs sm:text-sm transition-all rounded-sm shadow-md"
+                      disabled={(item as any).quantity === 0}
+                      className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-2 text-xs sm:text-sm transition-all rounded-sm shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       ADD TO CART
                     </button>
                     <button
                       onClick={() => {
+                        if ((item as any).quantity === 0) {
+                          toast.error('Out of Stock', { description: 'This product is currently unavailable.' })
+                          return
+                        }
                         addToCart({
                           id: item.id,
                           slug: item.slug,
@@ -268,7 +324,8 @@ export default function WishlistPage() {
                         })
                         router.push('/cart')
                       }}
-                      className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 text-sm transition-all rounded-sm shadow-md"
+                      disabled={(item as any).quantity === 0}
+                      className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 text-sm transition-all rounded-sm shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       BUY NOW
                     </button>

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
+import LoadingButton from "@/components/ui/loading-button"
 import { toast } from "sonner"
 import { getCart, updateQty, removeFromCart, clearCart } from "@/lib/cart"
 import { useSession } from "next-auth/react"
@@ -10,18 +11,21 @@ import Link from "next/link"
 import Image from "next/image"
 import { ShoppingBag, Trash2, Plus, Minus, Tag, Lock, Truck, ArrowRight } from "lucide-react"
 import CartSkeleton from "@/components/skeletons/CartSkeleton"
+import { useRouter } from "next/navigation"
 
 type CartItem = ReturnType<typeof getCart>[number]
 type Product = { id: string; quantity: number }
 
 export default function CartView() {
   const { data: session } = useSession()
+  const router = useRouter()
   const [items, setItems] = useState<CartItem[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
   const [hasStockIssue, setHasStockIssue] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
 
   useEffect(() => {
     setItems(getCart())
@@ -249,24 +253,28 @@ export default function CartView() {
                 )}
                 
                 {session ? (
-                  <Link href="/checkout" className={`block ${hasStockIssue ? 'pointer-events-none' : ''}`}>
-                    <Button 
-                      disabled={hasStockIssue}
-                      className="w-full bg-orange-600 hover:bg-orange-700 text-white py-4 sm:py-6 text-sm sm:text-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Proceed to Checkout
-                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
-                    </Button>
-                  </Link>
+                  <LoadingButton
+                    loading={checkoutLoading}
+                    disabled={hasStockIssue}
+                    onClick={() => {
+                      setCheckoutLoading(true)
+                      router.push('/checkout')
+                    }}
+                    className="w-full bg-orange-600 hover:bg-orange-700 text-white py-4 sm:py-6 text-sm sm:text-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Proceed to Checkout
+                    {!checkoutLoading && <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />}
+                  </LoadingButton>
                 ) : (
-                  <Button 
+                  <LoadingButton
+                    loading={checkoutLoading}
                     onClick={() => { setAuthMode('signin'); setShowAuthDialog(true) }}
                     disabled={hasStockIssue}
                     className="w-full bg-orange-600 hover:bg-orange-700 text-white py-4 sm:py-6 text-sm sm:text-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Sign in to Checkout
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
-                  </Button>
+                    {!checkoutLoading && <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />}
+                  </LoadingButton>
                 )}
               </div>
 

@@ -14,6 +14,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { CreditCard, Smartphone, Building2, Wallet, Banknote, MapPin, User, Mail, Phone, ShoppingBag, ArrowRight, Package, Lock, CalendarIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import LoadingButton from "@/components/ui/loading-button"
 import Loading from "../loading"
 
 type CartItem = { productId: string; qty: number; title?: string; price?: number; image?: string }
@@ -572,23 +573,15 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                <button
+                <LoadingButton
                   type="submit"
-                  disabled={submitting || hasStockIssue}
-                  className="w-full py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                  loading={submitting}
+                  disabled={hasStockIssue}
+                  className="w-full py-6 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {submitting ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <Package className="w-4 h-4" />
-                      Place Order
-                    </>
-                  )}
-                </button>
+                  {!submitting && <Package className="w-4 h-4 mr-2" />}
+                  {submitting ? 'Processing...' : 'Place Order'}
+                </LoadingButton>
 
                 <p className="text-xs text-gray-500 text-center mt-3">
                   By placing order, you agree to our terms

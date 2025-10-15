@@ -56,8 +56,8 @@ const HeaderSlider = () => {
     return (
       <div className="overflow-hidden relative w-full">
         <div
-          className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-8 md:px-12 mt-3 sm:mt-4 bg-gray-200 animate-pulse flex items-center sm:rounded-lg"
-          style={{ height: "200px" }}
+          className="relative px-1 sm:py-16 md:py-20 sm:px-8 md:px-12 mt-5 sm:mt-10 bg-gray-200 animate-pulse flex items-center sm:rounded-lg"
+          style={{ height: "280px" }}
         >
           <div className="relative z-10 max-w-2xl space-y-3 sm:space-y-4">
             <div className="h-4 sm:h-5 bg-gray-300 rounded w-32 sm:w-48"></div>

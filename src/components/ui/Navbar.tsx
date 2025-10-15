@@ -157,7 +157,7 @@ export function Navbar() {
             {/* Desktop nav */}
             <div className="hidden md:flex items-center gap-1 xl:ml-2">
               {[
-                { href: "/products", label: "Products" },
+                { href: "/category", label: "Category" },
                 { href: "/about", label: "About" },
                 { href: "/contact", label: "Support" },
               ].map((link) => (
@@ -165,7 +165,7 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={`relative text-sm font-medium px-3 py-2 pb-1 transition-colors ${
-                    pathname === link.href
+                    pathname === link.href || pathname.startsWith(link.href)
                       ? "text-blue-600 after:absolute after:left-1/2 after:-translate-x-1/2 after:bottom-0 after:h-[2px] after:w-2/3 after:bg-blue-600 after:rounded-full"
                       : "text-gray-700 hover:text-blue-600 dark:text-gray-300"
                   }`}

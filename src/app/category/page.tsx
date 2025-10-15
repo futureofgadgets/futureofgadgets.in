@@ -1,135 +1,92 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
 
-export default function ElectronicsPage() {
+const categoryIcons: { [key: string]: string } = {
+  laptops: "💻",
+  monitors: "🖥️",
+  keyboards: "⌨️",
+  mouse: "🖱️",
+  headphones: "🎧",
+  chargers: "🔌",
+  desktops: "🖥️",
+  speakers: "🔊",
+  webcams: "📹",
+  storage: "💾",
+  ram: "🧠",
+};
 
+export default function CategoryPage() {
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-
-  const categories = [
-    {
-      name: "Laptops",
-      slug: "laptops",
-      icon: "💻",
-
-      description: "High-performance laptops",
-    },
-    {
-      name: "Laptop Accessories",
-      slug: "laptop-accessories",
-      icon: "🎒",
-
-      description: "Stands, sleeves & hubs",
-    },
-    {
-      name: "Chargers",
-      slug: "chargers",
-      icon: "🔌",
-
-      description: "Power adapters & banks",
-    },
-    {
-      name: "Keyboards",
-      slug: "keyboards",
-      icon: "⌨️",
-
-      description: "Mechanical & wireless",
-    },
-    {
-      name: "Mouse",
-      slug: "mouse",
-      icon: "🖱️",
-
-      description: "Gaming & ergonomic",
-    },
-    {
-      name: "Monitors",
-      slug: "monitors",
-      icon: "🖥️",
-
-      description: "Professional displays",
-    },
-  ];
-
-
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/products");
+        const products = await response.json();
+        
+        const categoryMap = new Map();
+        products.forEach((product: any) => {
+          const cat = product.category?.toLowerCase();
+          if (cat) {
+            if (!categoryMap.has(cat)) {
+              categoryMap.set(cat, {
+                name: product.category,
+                slug: cat,
+                count: 0,
+              });
+            }
+            categoryMap.set(cat, {
+              ...categoryMap.get(cat),
+              count: categoryMap.get(cat).count + 1,
+            });
+          }
+        });
+        
+        setCategories(Array.from(categoryMap.values()));
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="w-full mx-auto px-4 py-8">
-        {/* Shop by Category Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Shop by Category
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover premium electronics and technology products
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-          {categories.map((category) => (
-            <Link key={category.slug} href={`/category/${category.slug}`}>
-              <Card className="group hover:shadow-md transition-all duration-300 cursor-pointer border-0 shadow-sm hover:-translate-y-1">
-                <CardContent className="p-6 text-center">
-                  <div className="mx-auto h-20 w-20 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <span className="text-3xl">
-                      {category.icon}
-                    </span>
-                  </div>
-                  <h3 className="font-bold text-xl mb-2 group-hover:text-blue-600 transition-colors">
-                    {category.name}
-                  </h3>
-                  <p className="text-gray-600 mb-3 text-sm">
-                    {category.description}
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
-
-        {/* Features Section */}
-        <div className="bg-white rounded-2xl p-8">
-          <h2 className="text-2xl font-bold text-center mb-8">
-            Why Shop With Us?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🚚</span>
+    <div className="min-h-screen bg-white py-12">
+      <div className="max-w-7xl mx-auto px-4">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-8">Shop by Category</h1>
+        
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-white border rounded-lg p-6 animate-pulse">
+                <div className="w-12 h-12 bg-gray-200 rounded-full mx-auto mb-3"></div>
+                <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-3 bg-gray-200 rounded w-2/3 mx-auto"></div>
               </div>
-              <h3 className="font-semibold mb-2">
-                Fast Delivery
-              </h3>
-              <p className="text-gray-600">
-                Free shipping on orders over $50. Same-day delivery available.
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🛡️</span>
-              </div>
-              <h3 className="font-semibold mb-2">
-                Secure Shopping
-              </h3>
-              <p className="text-gray-600">
-                Your data is protected with industry-standard encryption.
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">💎</span>
-              </div>
-              <h3 className="font-semibold mb-2">
-                Premium Quality
-              </h3>
-              <p className="text-gray-600">
-                Only authentic products from trusted brands and manufacturers.
-              </p>
-            </div>
+            ))}
           </div>
-        </div>
+        ) : categories.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {categories.map((cat) => (
+              <Link key={cat.slug} href={`/category/${cat.slug}`}>
+                <div className="bg-white border rounded-lg p-6 hover:shadow-lg transition-shadow text-center">
+                  <div className="text-5xl mb-3">{categoryIcons[cat.slug] || "📦"}</div>
+                  <h3 className="font-semibold text-sm mb-1">{cat.name}</h3>
+                  <p className="text-xs text-gray-500">{cat.count} products</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20">
+            <p className="text-gray-500">No categories found</p>
+          </div>
+        )}
       </div>
     </div>
   );
