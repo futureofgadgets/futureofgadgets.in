@@ -198,12 +198,12 @@ export default function ProductCard({ product, onAddToCart, onBuyNow }: ProductC
                   Out of Stock
                 </Link>
               ) : (
-                <Link href={`/products/${product.slug}`} className="sm:hidden flex items-center text-sm text-orange-600">
+                <Link href={`/products/${product.slug}`} className="flex items-center text-sm text-orange-600">
                   <span>Buy now</span>
                   <ChevronRight className="h-4 -left-4"/>
                 </Link>
               )}
-              <div className="hidden sm:flex gap-2">
+              <div className="hidden gap-2">
                 <button
                   onClick={(e) => {
                     const defaultColor = product.color ? product.color.split(',')[0].trim() : undefined;

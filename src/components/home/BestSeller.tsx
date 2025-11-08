@@ -68,7 +68,7 @@ export default function BestSeller(){
   }, [])
 
   return (
-    <section className="py-6 sm:py-10">
+    <section className="py-6">
       <div className="mx-auto max-w-[1440px]  sm:px-6 lg:px-11">
         <div className="flex items-center justify-between mb-4 sm:mb-6 px-3 sm:px-0">
           <div>

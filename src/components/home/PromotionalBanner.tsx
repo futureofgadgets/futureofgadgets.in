@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function PromotionalBanner(){
     return (
-         <section className="py-6 sm:py-10">
+         <section className="py-6">
         <div className="mx-auto max-w-[1400px] px-3 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Link href="/category/laptops" className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 p-6 sm:p-8 md:p-10 hover:shadow-2xl transition-all duration-300 group">

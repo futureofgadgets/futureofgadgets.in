@@ -290,7 +290,7 @@ export default function ProductPage() {
                   style={{
                     backgroundImage: `url(${images[selectedImage]})`,
                     backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                    backgroundSize: '170%',
+                    backgroundSize: '120%',
                     backgroundRepeat: 'no-repeat',
                     right: '20px',
                     top: '52%',

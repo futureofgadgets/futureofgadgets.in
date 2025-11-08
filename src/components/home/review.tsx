@@ -120,7 +120,7 @@ export default function Review() {
   };
 
   return (
-    <section className="py-6 sm:py-8 md:py-12 bg-gray-50">
+    <section className="py-6 bg-gray-50">
       <div className="mx-auto max-w-8xl px-3 sm:px-4 md:px-6 mb-4 sm:mb-6 md:mb-8">
         <div className="text-left leading-tight mb-4 sm:mx-2 lgtext:mx-7">
           <h2 className="text-base sm:text-lg md:text-3xl font-bold text-gray-900 leading-snug">
@@ -134,7 +134,7 @@ export default function Review() {
         <div className="relative">
           <div
             ref={scrollRef}
-            className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide scroll-smooth py-4 sm:py-6 md:py-8 pb-4"
+            className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hidden scroll-smooth py-4 sm:py-6 md:py-8 pb-4"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {infiniteReviews.map((review, i) => {

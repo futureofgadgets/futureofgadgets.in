@@ -65,7 +65,7 @@ export default function FeaturedSection() {
   }, [])
 
   return (
-    <section className="py-6 sm:py-10">
+    <section className="py-6">
      <div className="mx-auto max-w-[1440px]  sm:px-6 lg:px-11">
         {products.length > 0 && (
           <div className="mb-8">
