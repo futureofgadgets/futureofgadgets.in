@@ -126,7 +126,7 @@ export default function Review() {
                 key={i}
                 onClick={() => scrollToCenter(i)}
                 className={`flex-shrink-0 cursor-pointer group transition-all duration-500 ${
-                  isCenter ? "w-[260px] sm:w-[320px] md:w-[420px]" : "w-[240px] sm:w-[280px] md:w-[350px]"
+                  isCenter ? "w-[200px] sm:w-[260px] md:w-[360px]" : "w-[240px] sm:w-[280px] md:w-[350px]"
                 }`}
               >
                 <div className={`relative rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-500 ease-out hover:scale-105 border-2 sm:border-[3px] ${
