@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const laptopCategories = [
   { name: "Slim Laptops", image: "/category/ultra_thin_laptop.jpg", href: "/search?q=slim-laptop" },
-  { name: "Apple Macbook", image: "/category/regular_laptop.jpg", href: "/search?q=apple-macbook" },
+  { name: "Macbook", image: "/category/regular_laptop.jpg", href: "/search?q=apple-macbook" },
   { name: "Touch Laptops", image: "/category/touchscreen.png", href: "/search?q=touch-laptop" },
   { name: "Pro Laptops", image: "/category/pro_laptop.jpg", href: "/search?q=pro-laptop" },
   { name: "Gaming Laptops", image: "/category/best-gaming-laptop.jpg", href: "/search?q=gaming-laptop" },
