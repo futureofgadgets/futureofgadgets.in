@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import { writeFile } from 'fs/promises'
-import { join } from 'path'
+import { uploadToCloudinary } from '@/lib/cloudinary'
 
 const prisma = new PrismaClient()
 
@@ -30,12 +29,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-    const filename = `SAVE_${Date.now()}.jpg`
-    const filepath = join(process.cwd(), 'public', 'CustomerReview', filename)
-    await writeFile(filepath, buffer)
-    const imageUrl = `/CustomerReview/${filename}`
+    const imageUrl = await uploadToCloudinary(file)
     
     const review = await prisma.customerReview.create({
       data: {

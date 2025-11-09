@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import { writeFile } from 'fs/promises'
-import { join } from 'path'
+import { uploadToCloudinary } from '@/lib/cloudinary'
 
 const prisma = new PrismaClient()
 
@@ -21,12 +20,7 @@ export async function PUT(
     let imageUrl: string | undefined
     
     if (file) {
-      const bytes = await file.arrayBuffer()
-      const buffer = Buffer.from(bytes)
-      const filename = `SAVE_${Date.now()}.jpg`
-      const filepath = join(process.cwd(), 'public', 'CustomerReview', filename)
-      await writeFile(filepath, buffer)
-      imageUrl = `/CustomerReview/${filename}`
+      imageUrl = await uploadToCloudinary(file)
     }
     
     const updateData: any = {

@@ -207,7 +207,7 @@ export default function OrdersPage() {
           {orders.map((order) => {
             const firstItem = order.items[0]
             const product = products.find(p => p.id === firstItem?.productId)
-            const imageUrl = product?.frontImage || product?.images?.[0] || '/placeholder-product.jpg'
+            const imageUrl = product?.frontImage || product?.images?.[0] || '/placeholder.svg'
             
             return (
             <div key={order.id} className="bg-white">
@@ -300,7 +300,7 @@ export default function OrdersPage() {
                                 <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
                                   {selectedOrder.items.map((item, idx) => {
                                     const product = products.find(p => p.id === item.productId)
-                                    const imageUrl = product?.frontImage || product?.images?.[0] || '/placeholder-product.jpg'
+                                    const imageUrl = product?.frontImage || product?.images?.[0] || '/placeholder.svg'
                                     const showReview = canReview(selectedOrder, item.productId)
                                     return (
                                       <div key={idx} className="flex gap-3 sm:gap-4 pb-3 sm:pb-4 border-b last:border-b-0">

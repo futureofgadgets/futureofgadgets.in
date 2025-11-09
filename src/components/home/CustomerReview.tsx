@@ -183,7 +183,7 @@ export default function CustomerReview() {
               >
                 <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-500 ease-out hover:scale-105">
                   <Image
-                    src={review.imageUrl}
+                    src={review.imageUrl || '/placeholder.svg'}
                     alt={`Review ${i + 1}`}
                     width={350}
                     height={500}
