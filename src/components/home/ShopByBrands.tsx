@@ -1,39 +1,74 @@
 "use client"
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 
 const brands = [
   { name: "Apple", image: "/brand/Apple.png",},
-  { name: "Asus", image: "/brand/Asus.png" },
   { name: "Dell", image: "/brand/dell.png" },
   { name: "HP", image: "/brand/hp.png" },
   { name: "Lenovo", image: "/brand/lenovo.png" },
-  { name: "Samsung", image: "/brand/samsung.png" },
-  { name: "Sony", image: "/brand/acer.png" },
   { name: "Alian Ware", image: "/brand/alianware.png" },
 ];
 
+const ITEM_WIDTH = 140;
+const AUTO_SCROLL_INTERVAL = 3000;
+
 const ShopByBrands = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isPaused, setIsPaused] = useState(false);
+  const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
+  const isScrollingRef = useRef(false);
+
+  const stopAutoScroll = useCallback(() => {
+    if (autoScrollRef.current) {
+      clearInterval(autoScrollRef.current);
+      autoScrollRef.current = null;
+    }
+  }, []);
+
+  const startAutoScroll = useCallback(() => {
+    stopAutoScroll();
+    autoScrollRef.current = setInterval(() => {
+      if (scrollRef.current && !isScrollingRef.current) {
+        scrollRef.current.scrollBy({ left: ITEM_WIDTH, behavior: "smooth" });
+      }
+    }, AUTO_SCROLL_INTERVAL);
+  }, [stopAutoScroll]);
 
   useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
+    const container = scrollRef.current;
+    if (!container || brands.length === 0) return;
 
-    let animationId: number;
-    const scroll = () => {
-      if (!isPaused && scrollContainer) {
-        scrollContainer.scrollLeft += 1;
-        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
-          scrollContainer.scrollLeft = 0;
+    const singleSetWidth = brands.length * ITEM_WIDTH;
+
+    const handleScroll = () => {
+      const { scrollLeft } = container;
+
+      if (!isScrollingRef.current) {
+        if (scrollLeft >= singleSetWidth * 2) {
+          isScrollingRef.current = true;
+          container.scrollLeft = singleSetWidth + (scrollLeft - singleSetWidth * 2);
+          requestAnimationFrame(() => {
+            isScrollingRef.current = false;
+          });
+        } else if (scrollLeft < singleSetWidth) {
+          isScrollingRef.current = true;
+          container.scrollLeft = singleSetWidth + scrollLeft;
+          requestAnimationFrame(() => {
+            isScrollingRef.current = false;
+          });
         }
       }
-      animationId = requestAnimationFrame(scroll);
     };
-    animationId = requestAnimationFrame(scroll);
-    return () => cancelAnimationFrame(animationId);
-  }, [isPaused]);
+
+    container.scrollLeft = singleSetWidth;
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    startAutoScroll();
+
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+      stopAutoScroll();
+    };
+  }, [startAutoScroll, stopAutoScroll]);
 
   return (
      <section className="py-6">
@@ -44,11 +79,12 @@ const ShopByBrands = () => {
           </div>
           <div 
             ref={scrollRef}
-            className="flex gap-3 sm:gap-4 overflow-x-hidden"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
+            className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hidden"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            onMouseEnter={stopAutoScroll}
+            onMouseLeave={startAutoScroll}
           >
-            {[...brands, ...brands].map((brand, idx) => (
+            {[...brands, ...brands, ...brands].map((brand, idx) => (
             <a
               key={`${brand.name}-${idx}`}
               href={`/search?q=${brand.name.toLowerCase()}`}

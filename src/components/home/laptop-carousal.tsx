@@ -4,12 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 const laptopCategories = [
-  { name: "Slim Laptops", image: "/category/ultra_thin_laptop.jpg", href: "/search?q=slim-laptop" },
-  { name: "Macbook", image: "/category/regular_laptop.jpg", href: "/search?q=apple-macbook" },
-  { name: "Touch Laptops", image: "/category/touchscreen.png", href: "/search?q=touch-laptop" },
-  { name: "Pro Laptops", image: "/category/pro_laptop.jpg", href: "/search?q=pro-laptop" },
+  { name: "Inspiron", image: "/category/ultra_thin_laptop.jpg", href: "/search?q=slim-laptop" },
+  { name: "Vastro", image: "/category/regular_laptop.jpg", href: "/search?q=apple-macbook" },
+  { name: "Touch (2 in 1)", image: "/category/touchscreen.png", href: "/search?q=touch-laptop" },
+  { name: "XPS", image: "/category/pro_laptop.jpg", href: "/search?q=pro-laptop" },
   { name: "Gaming Laptops", image: "/category/best-gaming-laptop.jpg", href: "/search?q=gaming-laptop" },
-  { name: "Office Laptops", image: "/category/office_laptop.jpg", href: "/search?q=office-laptop" },
+  { name: "Precision", image: "/category/office_laptop.jpg", href: "/search?q=office-laptop" },
+  { name: "Alienware", image: "/category/alienware.jpeg", href: "/search?q=alienware" },
 ];
 
 export default function LaptopCarousel() {
@@ -139,7 +140,7 @@ export default function LaptopCarousel() {
                       alt={category.name}
                       width={90}
                       height={90}
-                      className="object-contain scale-110 group-hover:scale-120 transition-transform duration-300"
+                      className="object-contain scale-130 group-hover:scale-140 transition-transform duration-300"
                     />
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 bg-black text-white text-center py-0.5 sm:py-1.5 text-[9px] sm:text-xs font-semibold">
