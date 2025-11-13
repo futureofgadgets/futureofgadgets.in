@@ -860,39 +860,16 @@ export default function AdminOrdersPage() {
                                  {(item as any).color}
                               </p>
                             )}
-                            {(item as any).selectedRam && (() => {
-                              // Fetch product to get RAM price
-                              const [product, setProduct] = useState<any>(null)
-                              useEffect(() => {
-                                fetch('/api/products').then(res => res.json()).then(products => {
-                                  const p = products.find((pr: any) => pr.id === item.productId)
-                                  setProduct(p)
-                                }).catch(() => {})
-                              }, [])
-                              const ramOption = product?.ramOptions?.find((r: any) => r.size === (item as any).selectedRam)
-                              const ramPrice = ramOption?.price || 0
-                              return (
-                                <p className="text-sm text-gray-600">
-                                  RAM: {(item as any).selectedRam}{ramPrice !== 0 && ` (+₹${ramPrice.toLocaleString()})`}
-                                </p>
-                              )
-                            })()}
-                            {(item as any).selectedStorage && (() => {
-                              const [product, setProduct] = useState<any>(null)
-                              useEffect(() => {
-                                fetch('/api/products').then(res => res.json()).then(products => {
-                                  const p = products.find((pr: any) => pr.id === item.productId)
-                                  setProduct(p)
-                                }).catch(() => {})
-                              }, [])
-                              const storageOption = product?.storageOptions?.find((s: any) => s.size === (item as any).selectedStorage)
-                              const storagePrice = storageOption?.price || 0
-                              return (
-                                <p className="text-sm text-gray-600">
-                                  Storage: {(item as any).selectedStorage}{storagePrice !== 0 && ` (+₹${storagePrice.toLocaleString()})`}
-                                </p>
-                              )
-                            })()}
+                            {(item as any).selectedRam && (
+                              <p className="text-sm text-gray-600">
+                                RAM: {(item as any).selectedRam}
+                              </p>
+                            )}
+                            {(item as any).selectedStorage && (
+                              <p className="text-sm text-gray-600">
+                                Storage: {(item as any).selectedStorage}
+                              </p>
+                            )}
                             {(item as any).warranty && (
                               <p className="text-sm text-gray-600">
                                 Warranty: {(item as any).warranty.duration} (+₹{(item as any).warranty.price.toLocaleString()})
