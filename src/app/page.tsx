@@ -43,7 +43,7 @@ export default function HomePage() {
     },
     {
       title: "Free Returns",
-      description: "30-day return policy",
+      description: "7-day return policy",
       icon: <GitCompareArrows className="w-8 h-8 sm:w-10 sm:h-10" />,
     },
     {

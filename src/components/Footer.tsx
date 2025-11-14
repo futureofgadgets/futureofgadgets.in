@@ -67,11 +67,15 @@ export function Footer({ className = "" }: FooterProps) {
           <div>
             <h4 className="text-base font-bold mb-4 text-white">Categories</h4>
             <ul className="space-y-2.5 text-sm">
-              <li><Link href="/category/laptops" className="text-gray-400 hover:text-blue-400 transition-colors">Laptops</Link></li>
-              <li><Link href="/category/smartphones" className="text-gray-400 hover:text-blue-400 transition-colors">Smartphones</Link></li>
-              <li><Link href="/category/headphones" className="text-gray-400 hover:text-blue-400 transition-colors">Headphones</Link></li>
-              <li><Link href="/category/monitors" className="text-gray-400 hover:text-blue-400 transition-colors">Monitors</Link></li>
-              <li><Link href="/category" className="text-gray-400 hover:text-blue-400 transition-colors">All Categories</Link></li>
+              {[
+                { href: '/search?q=laptops', label: 'Laptops' },
+                { href: '/search?q=refurbishedlaptops', label: 'Refurbished Laptops' },
+                { href: '/search?q=mouse', label: 'Mouse' },
+                { href: '/search?q=desktops', label: 'Monitors' },
+                { href: '/category', label: 'All Categories' }
+              ].map(link => (
+                <li key={link.href}><Link href={link.href} className="text-gray-400 hover:text-blue-400 transition-colors">{link.label}</Link></li>
+              ))}
             </ul>
           </div>
           
@@ -79,11 +83,14 @@ export function Footer({ className = "" }: FooterProps) {
           <div>
             <h4 className="text-base font-bold mb-4 text-white">Customer Service</h4>
             <ul className="space-y-2.5 text-sm">
-              <li><Link href="/about" className="text-gray-400 hover:text-blue-400 transition-colors">About Us</Link></li>
-              <li><Link href="/contact" className="text-gray-400 hover:text-blue-400 transition-colors">Contact Us</Link></li>
-              {/* <li><Link href="/contact" className="text-gray-400 hover:text-blue-400 transition-colors">Support</Link></li> */}
-              <li><Link href="/orders" className="text-gray-400 hover:text-blue-400 transition-colors">Track Orders</Link></li>
-              <li><Link href="/faq" className="text-gray-400 hover:text-blue-400 transition-colors">FAQ</Link></li>
+              {[
+                { href: '/about', label: 'About Us' },
+                { href: '/contact', label: 'Contact Us' },
+                { href: '/orders', label: 'Track Orders' },
+                { href: '/contact', label: 'FAQ' }
+              ].map(link => (
+                <li key={link.label}><Link href={link.href} className="text-gray-400 hover:text-blue-400 transition-colors">{link.label}</Link></li>
+              ))}
             </ul>
           </div>
 
@@ -91,10 +98,14 @@ export function Footer({ className = "" }: FooterProps) {
           <div>
             <h4 className="text-base font-bold mb-4 text-white">Quick Links</h4>
             <ul className="space-y-2.5 text-sm">
-              <li><Link href="/products" className="text-gray-400 hover:text-blue-400 transition-colors">All Products</Link></li>
-              <li><Link href="/wishlist" className="text-gray-400 hover:text-blue-400 transition-colors">Wishlist</Link></li>
-              <li><Link href="/cart" className="text-gray-400 hover:text-blue-400 transition-colors">Shopping Cart</Link></li>
-              <li><Link href="/profile" className="text-gray-400 hover:text-blue-400 transition-colors">My Account</Link></li>
+              {[
+                { href: '/products', label: 'All Products' },
+                { href: '/wishlist', label: 'Wishlist' },
+                { href: '/cart', label: 'Shopping Cart' },
+                { href: '/profile', label: 'My Account' }
+              ].map(link => (
+                <li key={link.href}><Link href={link.href} className="text-gray-400 hover:text-blue-400 transition-colors">{link.label}</Link></li>
+              ))}
             </ul>
           </div>
         </div>
@@ -103,9 +114,13 @@ export function Footer({ className = "" }: FooterProps) {
         <div className="border-t border-gray-800 mt-10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-400 text-center sm:text-left">© 2025 Future Of Gadgets. All rights reserved.</p>
           <div className="flex flex-wrap justify-center gap-6">
-            <Link href="/privacy" className="text-sm text-gray-400 hover:text-blue-400 transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="text-sm text-gray-400 hover:text-blue-400 transition-colors">Terms of Service</Link>
-            <Link href="/cookies" className="text-sm text-gray-400 hover:text-blue-400 transition-colors">Cookie Policy</Link>
+            {[
+              { href: '/privacy-policy', label: 'Privacy Policy' },
+              { href: '/terms-of-service', label: 'Terms of Service' },
+              { href: '/cookie-policy', label: 'Cookie Policy' }
+            ].map(link => (
+              <Link key={link.href} href={link.href} className="text-sm text-gray-400 hover:text-blue-400 transition-colors">{link.label}</Link>
+            ))}
           </div>
         </div>
       </div>

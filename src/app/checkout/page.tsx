@@ -61,7 +61,7 @@ export default function CheckoutPage() {
       state: "",
       city: "",
       zip: "",
-      deliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      deliveryDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
     }
   })
 
@@ -493,10 +493,10 @@ export default function CheckoutPage() {
                                   setShowCalendar(false)
                                 }}
                                 disabled={(date) => {
-                                  const sevenDaysFromNow = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-                                  sevenDaysFromNow.setHours(0, 0, 0, 0)
+                                  const fiveDaysFromNow = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000)
+                                  fiveDaysFromNow.setHours(0, 0, 0, 0)
                                   date.setHours(0, 0, 0, 0)
-                                  return date.getTime() < sevenDaysFromNow.getTime()
+                                  return date.getTime() < fiveDaysFromNow.getTime()
                                 }}
                                 initialFocus
                               />
