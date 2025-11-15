@@ -21,7 +21,7 @@ const laptopCategories = [
   },
   {
     name: "XPS",
-    image: "/category/pro_laptop.jpg",
+    image: "/category/XPS.jpg",
     href: "/search?q=pro-laptop",
   },
   {
