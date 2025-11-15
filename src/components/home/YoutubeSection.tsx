@@ -81,12 +81,12 @@ export default function YoutubeSection() {
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
               Latest Videos
             </h2>
-            <p className="text-sm text-gray-600">Visit our YouTube channel for more tech content</p>
+            <p className="text-sm hidden sm:block text-gray-600">Visit our YouTube channel for more tech content</p>
           </div>
           {contactSettings.youtube && (
             <button
               onClick={() => window.open(contactSettings.youtube, '_blank')}
-              className="hidden sm:flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium hover:cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium hover:cursor-pointer"
             >
               <Play className="w-4 h-4 fill-current" />
               Subscribe
