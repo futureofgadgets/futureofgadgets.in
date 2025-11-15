@@ -77,6 +77,8 @@ type Item = {
   operatingSystem?: string;
   graphics?: string;
   color?: string;
+  warranty?: string;
+  warrantyType?: string;
   ramOptions?: { size: string; price: number }[];
   storageOptions?: { size: string; price: number }[];
   warrantyOptions?: { duration: string; price: number }[];
@@ -92,6 +94,8 @@ const itemSchema = z.object({
   quantity: z.number().min(0).optional(),
   brand: z.string().optional(),
   modelName: z.string().min(1, "Model name is required"),
+  warranty: z.string().optional(),
+  warrantyType: z.string().optional(),
   screenSize: z.string().optional(),
   cpuModel: z.string().optional(),
   operatingSystem: z.string().optional(),
@@ -140,6 +144,8 @@ export default function ProductTable() {
     discount: 0,
     brand: "",
     modelName: "",
+    warranty: "",
+    warrantyType: "",
     screenSize: "",
     cpuModel: "",
     operatingSystem: "",
@@ -203,6 +209,8 @@ export default function ProductTable() {
             operatingSystem: p.operatingSystem ?? "",
             graphics: p.graphics ?? "",
             color: p.color ?? "",
+            warranty: p.warranty ?? "",
+            warrantyType: p.warrantyType ?? "",
             ramOptions: p.ramOptions || [],
             storageOptions: p.storageOptions || [],
             warrantyOptions: p.warrantyOptions || [],
@@ -286,6 +294,8 @@ export default function ProductTable() {
       quantity: item.quantity || 0,
       brand: item.brand || "",
       modelName: item.modelName || "",
+      warranty: item.warranty || "",
+      warrantyType: item.warrantyType || "",
       screenSize: item.screenSize || "",
       cpuModel: item.cpuModel || "",
       operatingSystem: item.operatingSystem || "",
@@ -468,7 +478,8 @@ export default function ProductTable() {
         quantity: values.quantity || 0,
         brand: values.brand,
         modelName: values.modelName,
-
+        warranty: values.warranty,
+        warrantyType: values.warrantyType,
         screenSize: values.screenSize,
         cpuModel: values.cpuModel,
         operatingSystem: values.operatingSystem,
@@ -515,6 +526,8 @@ export default function ProductTable() {
         quantity: values.quantity || 0,
         brand: values.brand || "",
         modelName: values.modelName || "",
+        warranty: values.warranty || "",
+        warrantyType: values.warrantyType || "",
         sku: editId
           ? data.find((item) => item.id === editId)?.sku || `SKU-${Date.now()}`
           : `SKU-${Date.now()}`,
@@ -524,6 +537,8 @@ export default function ProductTable() {
         operatingSystem: values.operatingSystem || "",
         graphics: values.graphics || "",
         color: values.color || "",
+        warranty: values.warranty || "",
+        warrantyType: values.warrantyType || "",
         ramOptions: ramOptions,
         storageOptions: storageOptions,
         warrantyOptions: warrantyOptions,
@@ -718,6 +733,42 @@ export default function ProductTable() {
                           </FormItem>
                         )}
                       />
+
+                      {/* Warranty */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="warranty"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Warranty</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="e.g. 1 Year, 2 Years"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="warrantyType"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Warranty Type</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="e.g. Onsite, Carry-in"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
 
                       {/* Category with dropdown */}
                       <FormField

@@ -34,6 +34,8 @@ type Product = {
   graphics?: string;
   color?: string;
   modelName?:string;
+  warranty?: string;
+  warrantyType?: string;
   ramOptions?: { size: string; price: number; quantity: number }[];
   storageOptions?: { size: string; price: number; quantity: number }[];
   warrantyOptions?: { duration: string; price: number }[];
@@ -758,14 +760,14 @@ export default function ProductPage() {
                 <div className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 bg-purple-50 rounded-lg">
                   <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="text-xs sm:text-sm font-semibold text-gray-900">1 Year Warranty</div>
-                    <div className="text-xs text-gray-600 hidden sm:block">Manufacturer warranty</div>
+                    <div className="text-xs sm:text-sm font-semibold text-gray-900">{product.warranty} Warranty</div>
+                    <div className="text-xs text-gray-600 hidden sm:block">{product.warrantyType} Warranty</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 bg-orange-50 rounded-lg">
                   <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="text-xs sm:text-sm font-semibold text-gray-900">Cash on Delivery</div>
+                    <div className="text-xs sm:text-sm font-semibold text-gray-900">Cash on Delivery (Delhi NCR)</div>
                     <div className="text-xs text-gray-600 hidden sm:block">Pay on delivery</div>
                   </div>
                 </div>
@@ -920,14 +922,18 @@ export default function ProductPage() {
                   <span className="font-medium text-right">{product.operatingSystem}</span>
                 </div>
               )}
-              <div className="flex justify-between py-2 border-b">
-                <span className="text-gray-600">Warranty</span>
-                <span className="font-medium text-right">1 Year</span>
-              </div>
-              <div className="flex justify-between py-2 border-b">
-                <span className="text-gray-600">Warranty Type</span>
-                <span className="font-medium text-right">Manufacturer</span>
-              </div>
+              {product.warranty && (
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-600">Warranty</span>
+                  <span className="font-medium text-right">{product.warranty}</span>
+                </div>
+              )}
+              {product.warrantyType && (
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-600">Warranty Type</span>
+                  <span className="font-medium text-right">{product.warrantyType} Warranty</span>
+                </div>
+              )}
               <div className="flex justify-between py-2">
                 <span className="text-gray-600">Certification</span>
                 <span className="font-medium text-right">ISI Certified</span>

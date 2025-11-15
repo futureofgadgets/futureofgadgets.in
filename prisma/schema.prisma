@@ -44,6 +44,8 @@ model Product {
   quantity      Int      @default(0)
   status        String   @default("active")
   modelName     String?
+  warranty      String?
+  warrantyType  String?
   screenSize    String?
   cpuModel      String?
   operatingSystem String?

@@ -52,6 +52,8 @@ export async function POST(req: Request) {
         quantity: calculatedQty,
         brand: data.brand || '',
         modelName: data.modelName || '',
+        warranty: data.warranty || '',
+        warrantyType: data.warrantyType || '',
         screenSize: data.screenSize || '',
         cpuModel: data.cpuModel || '',
         operatingSystem: data.operatingSystem || '',

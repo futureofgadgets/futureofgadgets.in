@@ -24,6 +24,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         quantity: calculatedQty,
         brand: data.brand || '',
         modelName: data.modelName || '',
+        warranty: data.warranty || '',
+        warrantyType: data.warrantyType || '',
         screenSize: data.screenSize || '',
         cpuModel: data.cpuModel || '',
         operatingSystem: data.operatingSystem || '',
