@@ -189,9 +189,9 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 bg-white rounded-lg p-8">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 mb-4">
-              <img src="/about/globe-free-img.png" alt="Worldwide Shipping" className="w-12 h-12" />
+              <img src="/about/globe-free-img.png" alt="Pan India Shipping" className="w-12 h-12" />
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Worldwide Shipping</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Pan India Shipping</h3>
             <p className="text-sm text-gray-600 leading-relaxed">We Are Committed To Delivering Your Order Accurately, In Good Condition, And Always On Time.</p>
           </div>
           
