@@ -134,7 +134,7 @@ const HeaderSlider = () => {
                   }
                 />
               )}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent z-[1]"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-black/10 to-transparent z-[1]"></div>
               <div className="relative z-10 max-w-xl text-white px-4 sm:px-0">
                 <p className="text-[10px] sm:text-sm text-orange-400 pb-1 sm:pb-2 font-bold uppercase tracking-wide">
                   {slide.offer}
