@@ -447,7 +447,7 @@ export default function ProductTable() {
 
     // Check for duplicate name
     const duplicateName = data.find(item => 
-      item.name.toLowerCase() === values.name.trim().toLowerCase() && 
+      item.name.toLowerCase() === values.name?.trim().toLowerCase() && 
       item.id !== editId
     );
     if (duplicateName) {
