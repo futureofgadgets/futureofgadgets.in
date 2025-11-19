@@ -39,6 +39,7 @@ type Order = {
   billUrl?: string
   razorpayPaymentId?: string
   razorpayOrderId?: string
+  refundTransactionId?: string
   createdAt: string
   updatedAt: string
 }
@@ -51,6 +52,7 @@ export default function OrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [showTrackingModal, setShowTrackingModal] = useState(false)
+  const [trackingOrderId, setTrackingOrderId] = useState<string | null>(null)
 
   const [showCancelDialog, setShowCancelDialog] = useState(false)
   const [cancelReason, setCancelReason] = useState('')
@@ -81,6 +83,7 @@ export default function OrdersPage() {
         
         if (ordersResponse.ok) {
           const ordersData = await ordersResponse.json()
+          console.log('Orders data:', ordersData.orders)
           setOrders(ordersData.orders)
         }
         
@@ -243,7 +246,7 @@ export default function OrdersPage() {
                 <div className="flex flex-col sm:flex-row justify-between gap-3 pt-3 sm:pt-4 border-t border-gray-200">
                    <div className="flex items-center gap-2 min-w-0">
                    <div className={`hidden sm:block w-2 h-2 mt-0.5 rounded-full ${
-                      order.status === 'delivered' ? 'bg-purple-500' :
+                      order.status === 'delivered' ? (order.refundTransactionId ? 'bg-orange-500' : 'bg-purple-500') :
                       order.status === 'out-for-delivery' ? 'bg-orange-500' :
                       order.status === 'shipped' ? 'bg-blue-500' :
                       order.status === 'cancelled' ? 'bg-red-500' :
@@ -251,13 +254,13 @@ export default function OrdersPage() {
                     }`}></div>
                     <div className="min-w-0">
                       <span className={`text-xs sm:text-sm font-medium ${
-                        order.status === 'delivered' ? 'text-purple-600' :
+                        order.status === 'delivered' ? (order.refundTransactionId ? 'text-orange-600' : 'text-purple-600') :
                         order.status === 'out-for-delivery' ? 'text-orange-600' :
                         order.status === 'shipped' ? 'text-blue-700' :
                         order.status === 'cancelled' ? 'text-red-600' :
                         'text-green-500'
                       }`}>
-                        {order.status === 'out-for-delivery' ? 'Out for delivery' : order.status === 'pending' ? 'Order confirmed' : order.status === 'shipped' ? 'Shipped' : order.status === 'delivered' ? 'Delivered' : order.status === 'cancelled' ? 'Cancelled' : order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        {order.status === 'out-for-delivery' ? 'Out for delivery' : order.status === 'pending' ? 'Order confirmed' : order.status === 'shipped' ? 'Shipped' : order.status === 'delivered' ? (order.refundTransactionId ? 'Refunded' : 'Delivered') : order.status === 'cancelled' ? 'Cancelled' : order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                       </span>
                       <span className="text-xs text-gray-500 ml-0 sm:ml-2 block sm:inline">
                         on {new Date(order.status === 'pending' ? order.createdAt : order.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at {new Date(order.status === 'pending' ? order.createdAt : order.updatedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
@@ -375,8 +378,8 @@ export default function OrdersPage() {
                                   )}
                                   {selectedOrder.status === 'delivered' && (
                                     <div className="flex items-center gap-2 sm:gap-3">
-                                      <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-purple-500 rounded-full flex-shrink-0"></div>
-                                      <span className="text-sm sm:text-base font-medium">Delivered, {new Date(selectedOrder.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                                      <div className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${selectedOrder.refundTransactionId ? 'bg-orange-500' : 'bg-purple-500'} rounded-full flex-shrink-0`}></div>
+                                      <span className="text-sm sm:text-base font-medium">{selectedOrder.refundTransactionId ? 'Refunded' : 'Delivered'}, {new Date(selectedOrder.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
                                     </div>
                                   )}
                                   {selectedOrder.status === 'cancelled' && (
@@ -386,7 +389,10 @@ export default function OrdersPage() {
                                     </div>
                                   )}
                                   <button 
-                                    onClick={() => setShowTrackingModal(true)}
+                                    onClick={() => {
+                                      setTrackingOrderId(selectedOrder.id)
+                                      setShowTrackingModal(true)
+                                    }}
                                     className="text-blue-600 text-xs sm:text-sm font-medium flex items-center gap-1 hover:underline"
                                   >
                                     See All Updates <span>›</span>
@@ -479,6 +485,12 @@ export default function OrdersPage() {
                                         <p className="text-xs text-green-700 font-medium">✓ Payment Verified & Secured</p>
                                       </div>
                                     </>
+                                  )}
+                                  {selectedOrder.refundTransactionId && (
+                                    <div className="flex justify-between text-xs sm:text-sm text-gray-600 pt-1 sm:pt-2">
+                                      <span>Refund Transaction ID</span>
+                                      <span className="font-mono text-xs break-all text-right">{selectedOrder.refundTransactionId}</span>
+                                    </div>
                                   )}
                                 </div>
                               </div>
@@ -638,12 +650,12 @@ export default function OrdersPage() {
                   </Dialog>
                   
                   {/* Order Tracking Modal */}
-                  <Dialog open={showTrackingModal} onOpenChange={setShowTrackingModal}>
+                  <Dialog open={showTrackingModal && trackingOrderId === order.id} onOpenChange={setShowTrackingModal}>
                     <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
                       <DialogHeader>
                         <DialogTitle>Order Tracking Details</DialogTitle>
                       </DialogHeader>
-                      {selectedOrder && (
+                      {selectedOrder && trackingOrderId === order.id && (
                         <div className="py-4 space-y-4">
                           {/* Order Confirmed */}
                           <div className="border-l-4 border-green-500 bg-green-50 p-4 rounded-r-lg">
@@ -699,17 +711,17 @@ export default function OrdersPage() {
 
                           {/* Delivered */}
                           {selectedOrder.status === 'delivered' && (
-                            <div className="border-l-4 border-purple-500 bg-purple-50 p-4 rounded-r-lg">
+                            <div className={`border-l-4 ${selectedOrder.refundTransactionId ? 'border-orange-500 bg-orange-50' : 'border-purple-500 bg-purple-50'} p-4 rounded-r-lg`}>
                               <div className="flex items-start gap-3">
-                                <CheckCircle className="w-6 h-6 text-purple-600 flex-shrink-0 mt-0.5" />
+                                <CheckCircle className={`w-6 h-6 ${selectedOrder.refundTransactionId ? 'text-orange-600' : 'text-purple-600'} flex-shrink-0 mt-0.5`} />
                                 <div className="flex-1">
                                   <h3 className="text-base font-semibold text-gray-900 mb-1">
-                                    Delivered
+                                    {selectedOrder.refundTransactionId ? 'Refunded' : 'Delivered'}
                                   </h3>
                                   <p className="text-sm text-gray-600 mb-2">
                                     {new Date(selectedOrder.updatedAt).toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} at {new Date(selectedOrder.updatedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
                                   </p>
-                                  <p className="text-sm text-gray-700">Your item has been delivered successfully.</p>
+                                  <p className="text-sm text-gray-700">{selectedOrder.refundTransactionId ? 'Your order has been refunded.' : 'Your item has been delivered successfully.'}</p>
                                 </div>
                               </div>
                             </div>

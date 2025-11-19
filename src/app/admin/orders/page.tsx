@@ -77,13 +77,11 @@ function ProductImage({
         setImageSrc(
           product?.frontImage ||
             product?.image ||
-            "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop"
+            "/placeholder.svg"
         );
       })
       .catch(() => {
-        setImageSrc(
-          "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop"
-        );
+        setImageSrc("/placeholder.svg");
       });
   }, [productId]);
 
@@ -144,6 +142,7 @@ type Order = {
   billUrl?: string;
   razorpayPaymentId?: string;
   razorpayOrderId?: string;
+  refundTransactionId?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -164,6 +163,9 @@ export default function AdminOrdersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("date-desc");
   const [statusChangeTime, setStatusChangeTime] = useState<{[key: string]: number}>({});
+  const [showRefundDialog, setShowRefundDialog] = useState(false);
+  const [refundTransactionId, setRefundTransactionId] = useState("");
+  const [processingRefund, setProcessingRefund] = useState(false);
 
   useEffect(() => {
     if (
@@ -237,6 +239,7 @@ export default function AdminOrdersPage() {
             "out",
             "delivered",
             "cancelled",
+            "refund"
           ].map((tab) => (
             <div
               key={tab}
@@ -248,6 +251,7 @@ export default function AdminOrdersPage() {
               {tab === "out" && "Out of Delivery"}
               {tab === "delivered" && "Completed"}
               {tab === "cancelled" && "Cancelled"}
+              {tab === "refund" && "Refund"}
             </div>
           ))}
         </div>
@@ -542,6 +546,7 @@ export default function AdminOrdersPage() {
         statusFilter === "all" || 
         (statusFilter === "out" ? order.status === "out-for-delivery" : 
          statusFilter === "cancelled" ? order.status === "cancelled" : 
+         statusFilter === "refund" ? (order.status === "delivered" && order.refundTransactionId) :
          order.status === statusFilter);
       const matchesSearch =
         searchQuery === "" ||
@@ -638,7 +643,7 @@ export default function AdminOrdersPage() {
 
       {/* Tabs */}
       <div className="flex text-sm overflow-x-auto gap-3 sm:gap-8 px-4 sm:px-6 lg:px-8 py-4 border-b border-gray-200">
-        {["all", "pending", "shipped", "out", "delivered", "cancelled"].map((tab) => (
+        {["all", "pending", "shipped", "out", "delivered", "cancelled", "refund"].map((tab) => (
           <button
             key={tab}
             onClick={() => setStatusFilter(tab)}
@@ -654,6 +659,7 @@ export default function AdminOrdersPage() {
             {tab === "out" && "Out of Delivery"}
             {tab === "delivered" && "Completed"}
             {tab === "cancelled" && "Cancelled"}
+            {tab === "refund" && "Refund"}
           </button>
         ))}
       </div>
@@ -826,13 +832,13 @@ export default function AdminOrdersPage() {
                               : order.status === "out-for-delivery"
                               ? "bg-orange-100 text-orange-800"
                               : order.status === "delivered"
-                              ? "bg-green-100 text-green-800"
+                              ? (order as any).refundTransactionId ? "bg-orange-100 text-orange-800" : "bg-green-100 text-green-800"
                               : order.status === "cancelled"
                               ? "bg-red-100 text-red-800"
                               : "bg-gray-100 text-gray-800"
                           }`}
                         >
-                          {order.status}
+                          {order.status === "delivered" && (order as any).refundTransactionId ? "refunded" : order.status}
                         </span>
                       </TableCell>
                       <TableCell
@@ -902,7 +908,7 @@ export default function AdminOrdersPage() {
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-medium w-fit ${
                     selectedOrder.status === "delivered"
-                      ? "bg-green-100 text-green-800"
+                      ? selectedOrder.refundTransactionId ? "bg-orange-100 text-orange-800" : "bg-green-100 text-green-800"
                       : selectedOrder.status === "shipped"
                       ? "bg-blue-100 text-blue-800"
                       : selectedOrder.status === "out-for-delivery"
@@ -916,8 +922,7 @@ export default function AdminOrdersPage() {
                       : "bg-gray-100 text-gray-800"
                   }`}
                 >
-                  {selectedOrder.status.charAt(0).toUpperCase() +
-                    selectedOrder.status.slice(1)}
+                  {selectedOrder.status === "delivered" && selectedOrder.refundTransactionId ? "Refunded" : selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}
                 </span>
               </div>
 
@@ -1012,6 +1017,12 @@ export default function AdminOrdersPage() {
                               </p>
                             </div>
                           </>
+                        )}
+                        {selectedOrder.refundTransactionId && (
+                          <div className="flex justify-between items-center text-sm">
+                            <span className="text-gray-600">Refund Transaction ID</span>
+                            <span className="font-mono text-xs break-all">{selectedOrder.refundTransactionId}</span>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -1209,8 +1220,8 @@ export default function AdminOrdersPage() {
                           </button>
                           {(() => {
                             const billUploadTime = new Date(selectedOrder.updatedAt).getTime();
-                            const oneDayInMs = 24 * 60 * 60 * 1000;
-                            const canRemove = Date.now() - billUploadTime < oneDayInMs;
+                            const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+                            const canRemove = Date.now() - billUploadTime < sevenDaysInMs;
                             return canRemove ? (
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
@@ -1419,14 +1430,14 @@ export default function AdminOrdersPage() {
                             <div
                               className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${
                                 selectedOrder.status === "delivered"
-                                  ? "bg-green-500"
+                                  ? selectedOrder.refundTransactionId ? "bg-orange-500" : "bg-green-500"
                                   : "bg-gray-300"
                               }`}
                             >
                               <CheckCircle className="h-5 w-5 text-white" />
                             </div>
                             <h4 className="font-medium text-gray-900 text-sm mb-1">
-                              Delivered
+                              {selectedOrder.refundTransactionId ? "Refunded" : "Delivered"}
                             </h4>
                             <p className="text-xs text-gray-600">
                               {selectedOrder.status === "delivered"
@@ -1558,6 +1569,91 @@ export default function AdminOrdersPage() {
                           </AlertDialog>
                         </div>
                       )}
+                      
+                      {/* Refund Button - Show for 7 days after delivery */}
+                      {selectedOrder.status === 'delivered' && !selectedOrder.refundTransactionId && (() => {
+                        const deliveryTime = new Date(selectedOrder.updatedAt).getTime();
+                        const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+                        const canRefund = Date.now() - deliveryTime < sevenDaysInMs;
+                        return canRefund ? (
+                          <div className="border-t pt-4">
+                            <Dialog open={showRefundDialog} onOpenChange={setShowRefundDialog}>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" className="w-full border-orange-600 text-orange-600 hover:bg-orange-50">
+                                  Refund
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Refund</DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4 py-4">
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                                      Transaction ID / Payment ID
+                                    </label>
+                                    <Input
+                                      type="text"
+                                      placeholder="Enter transaction or payment ID"
+                                      value={refundTransactionId}
+                                      onChange={(e) => setRefundTransactionId(e.target.value)}
+                                      disabled={processingRefund}
+                                    />
+                                  </div>
+                                  <div className="flex gap-2 justify-end">
+                                    <Button
+                                      variant="outline"
+                                      onClick={() => {
+                                        setShowRefundDialog(false);
+                                        setRefundTransactionId("");
+                                      }}
+                                      disabled={processingRefund}
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      onClick={async () => {
+                                        if (!refundTransactionId.trim()) {
+                                          toast.error('Please enter transaction ID');
+                                          return;
+                                        }
+                                        setProcessingRefund(true);
+                                        try {
+                                          const res = await fetch(`/api/orders/${selectedOrder.id}/refund`, {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ transactionId: refundTransactionId })
+                                          });
+                                          if (res.ok) {
+                                            const data = await res.json();
+                                            const updatedOrder = { ...selectedOrder, refundTransactionId: refundTransactionId };
+                                            setSelectedOrder(updatedOrder);
+                                            setOrders(orders.map(o => o.id === selectedOrder.id ? updatedOrder : o));
+                                            toast.success('Refund processed successfully');
+                                            setShowRefundDialog(false);
+                                            setRefundTransactionId("");
+                                          } else {
+                                            const data = await res.json();
+                                            toast.error(data.error || 'Failed to refund');
+                                          }
+                                        } catch (error) {
+                                          toast.error('Failed to refund');
+                                        } finally {
+                                          setProcessingRefund(false);
+                                        }
+                                      }}
+                                      disabled={processingRefund}
+                                      className="bg-orange-600 hover:bg-orange-700"
+                                    >
+                                      {processingRefund ? 'Processing...' : 'Refund'}
+                                    </Button>
+                                  </div>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                        ) : null;
+                      })()}
                     </div>
                   </div>
                 </div>

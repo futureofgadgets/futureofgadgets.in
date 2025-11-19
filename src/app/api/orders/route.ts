@@ -51,6 +51,7 @@ export async function GET() {
       paymentMethod: order.paymentMethod,
       deliveryDate: order.deliveryDate?.$date,
       billUrl: order.billUrl,
+      refundTransactionId: order.refundTransactionId,
       createdAt: order.createdAt.$date,
       updatedAt: typeof order.updatedAt === 'string' ? order.updatedAt : order.updatedAt.$date
     }))

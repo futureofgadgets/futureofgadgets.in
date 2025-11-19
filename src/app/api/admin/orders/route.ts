@@ -38,6 +38,7 @@ export async function GET() {
             paymentMethod: 1,
             deliveryDate: 1,
             billUrl: 1,
+            refundTransactionId: 1,
             createdAt: 1,
             updatedAt: 1,
             'user.id': '$user._id',
@@ -66,6 +67,7 @@ export async function GET() {
       paymentMethod: order.paymentMethod,
       deliveryDate: order.deliveryDate.$date || order.deliveryDate,
       billUrl: order.billUrl,
+      refundTransactionId: order.refundTransactionId,
       createdAt: order.createdAt.$date || order.createdAt,
       updatedAt: order.updatedAt.$date || order.updatedAt,
       user: {
@@ -156,6 +158,7 @@ export async function PATCH(request: Request) {
       paymentMethod: orderData.paymentMethod,
       deliveryDate: orderData.deliveryDate.$date || orderData.deliveryDate,
       billUrl: orderData.billUrl,
+      refundTransactionId: orderData.refundTransactionId,
       createdAt: orderData.createdAt.$date || orderData.createdAt,
       updatedAt: orderData.updatedAt.$date || orderData.updatedAt,
       user: {
