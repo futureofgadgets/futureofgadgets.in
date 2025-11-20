@@ -17,6 +17,8 @@ type Product = {
   price: number;
   mrp?: number;
   quantity: number;
+  rating?: number;
+  ratingCount?: number;
 };
 
 const ProductSkeleton = () => (
@@ -134,7 +136,9 @@ export default function ProductsPage() {
             images: p.images || [p.frontImage],
             price: p.price,
             mrp: p.mrp,
-            quantity: Math.max(0, (p.quantity || p.stock) - cartQty)
+            quantity: Math.max(0, (p.quantity || p.stock) - cartQty),
+            rating: p.rating,
+            ratingCount: p.ratingCount
           };
         });
         setProducts(mappedProducts);
