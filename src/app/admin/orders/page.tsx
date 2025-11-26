@@ -1032,13 +1032,12 @@ export default function AdminOrdersPage() {
               </TableBody>
             </Table>
           </div>
-          {deletedYearSpan && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg mx-4">
-              <p className="text-sm text-red-800">
-                <span className="font-semibold">Auto-Deleted:</span> {deletedCount} orders from years {deletedYearSpan} were automatically deleted and backed up to Excel.
+
+             <div className="mt-4 p-3 mx-auto text-center">
+              <p className="text-sm">
+                <span className="font-semibold">Auto-Deleted:</span> Orders from last years were automatically deleted and added up to Excel.
               </p>
             </div>
-          )}
         </div>
       </div>
 
