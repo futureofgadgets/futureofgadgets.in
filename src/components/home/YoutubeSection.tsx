@@ -36,13 +36,16 @@ export default function YoutubeSection() {
     if (!scrollRef.current || videos.length === 0 || isPaused) return;
 
     const scrollContainer = scrollRef.current;
+    const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+    
+    if (maxScroll <= 0) return;
+
     let animationId: number;
 
     const autoScroll = () => {
-      if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
+      scrollContainer.scrollLeft += 1;
+      if (scrollContainer.scrollLeft >= maxScroll) {
         scrollContainer.scrollLeft = 0;
-      } else {
-        scrollContainer.scrollLeft += 1;
       }
       animationId = requestAnimationFrame(autoScroll);
     };
@@ -104,9 +107,9 @@ export default function YoutubeSection() {
             className="flex gap-6 overflow-x-auto scrollbar-hidden py-2"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {[...videos, ...videos].map((video, index) => (
+            {videos.map((video) => (
               <div
-                key={`${video.id}-${index}`}
+                key={video.id}
                 className="flex-shrink-0 w-[320px] cursor-pointer group"
                 onClick={() => window.open(video.url, '_blank')}
               >
