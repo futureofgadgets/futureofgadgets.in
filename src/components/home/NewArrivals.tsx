@@ -31,8 +31,8 @@ export default function NewArrivals(){
     const updateCount = () => {
       if (window.innerWidth < 640) setDisplayCount(4);
       else if (window.innerWidth < 768) setDisplayCount(6);
-      else if (window.innerWidth < 1024) setDisplayCount(8);
-      else setDisplayCount(10);
+      // else if (window.innerWidth < 1024) setDisplayCount(8);
+      else setDisplayCount(8);
     };
     updateCount();
     window.addEventListener('resize', updateCount);

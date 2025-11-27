@@ -148,9 +148,9 @@ export default function ProductCard({ product, onAddToCart, onBuyNow }: ProductC
         {/* content -> flex-1 so cards match height and CTA stays at bottom */}
         <div className="p-4 flex-1 flex flex-col justify-between">
           <div>
-            <div className="flex justify-between items-start mb-2 h-10">
-              <Link href={`/products/${product.slug}`} className="flex-1">
-                <h3 className="text-base font-semibold text-gray-800 line-clamp-2 hover:text-blue-600 leading-snug">
+            <div className="flex justify-between items-start gap-2 mb-2">
+              <Link href={`/products/${product.slug}`} className="flex-1 min-w-0">
+                <h3 className="text-base font-semibold text-gray-800 line-clamp-2 hover:text-blue-600 leading-snug w-[35vw] sm:w-full">
                   {product.name}
                 </h3>
               </Link>
@@ -160,7 +160,7 @@ export default function ProductCard({ product, onAddToCart, onBuyNow }: ProductC
                   e.stopPropagation();
                   setShareProduct(product);
                 }}
-                className="ml-2 p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                className="flex-shrink-0 p-1.5 hover:bg-gray-100 rounded-full transition-colors"
                 title="Share product"
                 aria-label="Share product"
               >

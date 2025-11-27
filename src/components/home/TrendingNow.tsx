@@ -16,7 +16,7 @@ export default function TrendingNow(){
     const updateCount = () => {
       if (window.innerWidth < 640) setDisplayCount(4);
       else if (window.innerWidth < 768) setDisplayCount(6);
-      else setDisplayCount(5);
+      else setDisplayCount(8);
     };
     updateCount();
     window.addEventListener('resize', updateCount);
