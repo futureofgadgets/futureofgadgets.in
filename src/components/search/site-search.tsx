@@ -15,13 +15,13 @@ export function SiteSearch({ className }: { className?: string }) {
   const router = useRouter()
 
   useEffect(() => {
-    const t = setTimeout(() => setDebounced(query), 200)
+    const t = setTimeout(() => setDebounced(query), 300)
     return () => clearTimeout(t)
   }, [query])
 
   useEffect(() => {
     async function fetchSuggestions() {
-      if (debounced.length > 1) {
+      if (debounced.length >= 2) {
         try {
           const res = await fetch(`/api/search/suggest?q=${encodeURIComponent(debounced)}`)
           const data = await res.json()
@@ -95,8 +95,8 @@ export function SiteSearch({ className }: { className?: string }) {
                   className="h-10 w-10 rounded object-cover"
                 />
                 <div className="min-w-0">
-                  <div className="truncate text-sm text-foreground">{s.title}</div>
-                  <div className="text-xs text-foreground/70">₹{(s.price / 100).toFixed(2)}</div>
+                  <div className="truncate text-sm text-foreground">{s.name}</div>
+                  <div className="text-xs text-foreground/70">₹{s.price?.toLocaleString()}</div>
                 </div>
               </li>
             ))}
