@@ -27,23 +27,9 @@ export default function WhatsAppFloat() {
       const hasSeenText = sessionStorage.getItem('whatsappTextSeen');
       if (!hasSeenText) {
         setShowText(true);
-        sessionStorage.setItem('whatsappTextSeen', 'true');
       }
     }
   }, [pathname, loading]);
-
-  useEffect(() => {
-    if (showText) {
-      const timer = setTimeout(() => {
-        setIsClosing(true);
-        setTimeout(() => {
-          setShowText(false);
-          setIsClosing(false);
-        }, 300);
-      }, 8000);
-      return () => clearTimeout(timer);
-    }
-  }, [showText]);
 
   const handleWhatsAppClick = () => {
     if (!loading && contactSettings.phone) {
@@ -72,6 +58,7 @@ export default function WhatsAppFloat() {
           <button
             onClick={() => {
               setIsClosing(true);
+              sessionStorage.setItem('whatsappTextSeen', 'true');
               setTimeout(() => {
                 setShowText(false);
                 setIsClosing(false);
