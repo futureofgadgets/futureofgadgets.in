@@ -36,7 +36,7 @@ export function Footer({ className = "" }: FooterProps) {
           {/* Brand Section — stays full width on small screens */}
           <div className="col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                 <img src="/logo.png" alt="Logo" className="h-10 w-full rounded" />
               </div>
               <h3 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">

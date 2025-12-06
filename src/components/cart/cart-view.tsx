@@ -15,6 +15,7 @@ import CartSkeleton from "@/components/skeletons/CartSkeleton"
 import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { DialogDescription } from "@radix-ui/react-dialog"
 
 type CartItem = {
   id: string
@@ -674,58 +675,60 @@ export default function CartView() {
       
       {/* Extended Warranty Dialog */}
       <Dialog open={warrantyDialogOpen} onOpenChange={setWarrantyDialogOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-blue-600" />
-              Extended Warranty
-            </DialogTitle>
-          </DialogHeader>
+        <DialogContent className="max-w-[95%] sm:max-w-md p-5 sm:p-6">
           {selectedCartItem && (() => {
             const product = products.find(p => p.id === selectedCartItem.id)
             const warrantyOptions = product?.warrantyOptions || []
             
             return (
-              <div className="space-y-3">
-                {warrantyOptions.length === 0 ? (
-                  <p className="text-sm text-gray-600">No extended warranty options available for this product.</p>
-                ) : (
-                  <>
-                    <p className="text-sm text-gray-600">Select an extended warranty plan for your product:</p>
-                    <div className="space-y-2">
-                      {warrantyOptions.map((warranty: any, index: number) => (
-                        <button
-                          key={index}
-                          onClick={() => {
-                            const isSelected = selectedCartItem.warranty?.duration === warranty.duration
-                            updateWarranty(
-                              selectedCartItem.id,
-                              isSelected ? undefined : warranty,
-                              selectedCartItem.color,
-                              selectedCartItem.selectedRam,
-                              selectedCartItem.selectedStorage,
-                              selectedCartItem.warranty
-                            )
-                            setItems(getCart())
-                            toast.success(isSelected ? 'Warranty removed' : 'Warranty updated')
-                            setWarrantyDialogOpen(false)
-                          }}
-                          className={`w-full flex items-center justify-between p-3 rounded-lg border-2 transition-all ${
-                            selectedCartItem.warranty?.duration === warranty.duration
-                              ? 'border-blue-600 bg-blue-50'
-                              : 'border-gray-200 hover:border-blue-400'
-                          }`}
-                        >
-                          <span className="font-medium">{warranty.duration} Extended Warranty</span>
-                          <span className="font-bold text-blue-600">₹{warranty.price.toLocaleString()}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-            )
-          })()}
+              <>
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-blue-600" />
+                    Extended Warranty
+                  </DialogTitle>
+                  <DialogDescription className={`text-xs sm:text-sm text-gray-600 text-left ${warrantyOptions.length === 0 ? 'mt-4' : ''}`}>
+                    {warrantyOptions.length === 0 
+                      ? "No extended warranty options available for this product."
+                      : "Choose an extended warranty plan for your selected product"}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-3">
+                  {warrantyOptions.length === 0 ? null : (
+                      <div className="space-y-2 text-xs sm:text-sm">
+                        {warrantyOptions.map((warranty: any, index: number) => (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              const isSelected = selectedCartItem.warranty?.duration === warranty.duration
+                              updateWarranty(
+                                selectedCartItem.id,
+                                isSelected ? undefined : warranty,
+                                selectedCartItem.color,
+                                selectedCartItem.selectedRam,
+                                selectedCartItem.selectedStorage,
+                                selectedCartItem.warranty
+                              )
+                              setItems(getCart())
+                              toast.success(isSelected ? 'Warranty removed' : 'Warranty updated')
+                              setWarrantyDialogOpen(false)
+                            }}
+                            className={`w-full flex items-center justify-between p-2 sm:p-3 rounded-lg border-2 transition-all text-left ${
+                              selectedCartItem.warranty?.duration === warranty.duration
+                                ? 'border-blue-600 bg-blue-50'
+                                : 'border-gray-200 hover:border-blue-400'
+                            }`}
+                          >
+                            <span className="font-medium">{warranty.duration} Extended Warranty</span>
+                            <span className="font-bold text-blue-600">₹{warranty.price.toLocaleString()}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )
+            })()}
         </DialogContent>
       </Dialog>
     </div>

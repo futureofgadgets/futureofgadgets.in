@@ -202,7 +202,7 @@ export default function CheckoutPage() {
         key: keyId,
         amount,
         currency,
-        name: 'Electronic Store',
+        name: 'Future of Gadgets',
         description: 'Order Payment',
         order_id: orderId,
         handler: async function (response: any) {

@@ -134,7 +134,7 @@ export function Navbar({ offsetTop = '0px' }: { offsetTop?: string }) {
               aria-label="Go to homepage"
             >
               <>
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center">
                   <Image
                     src="/logo.png"
                     alt="Future of Gadgets Logo"
