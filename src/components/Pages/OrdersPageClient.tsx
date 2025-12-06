@@ -206,7 +206,7 @@ export default function OrdersPage() {
 
 
   return (
-    <div className="min-h-screen bg-gray-100 mt-1">
+    <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto py-4 px-2 sm:px-4">
         <div className="space-y-4">
           {orders.map((order) => {
